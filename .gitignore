@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# Specific files
+secrets.hpp
