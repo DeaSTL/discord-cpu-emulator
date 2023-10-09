@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -g
+CFLAGS = -Wall -g -std=c++20
 LIBS = -ldpp
 
 BUILD_DIR = build
