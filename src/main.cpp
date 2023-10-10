@@ -1,13 +1,10 @@
 #include <iostream>
 #include <dpp/dpp.h>
 #include "secrets.hpp"
-#include "cpu.hpp"
 
 
 int main(){
     dpp::cluster bot(DISCORD_APPLICATION_TOKEN);
-    Cpu::Instruction* inst = Cpu::parseRawInstruction(0b000000000000000000000000010000);
-    inst->print();
     bot.on_slashcommand([](auto event) {
         if(event.command.get_command_name() == "ping") {
             event.reply("Pong!");
