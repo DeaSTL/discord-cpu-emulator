@@ -33,3 +33,5 @@
 
 # Specific files
 secrets.hpp
+
+.cache/
