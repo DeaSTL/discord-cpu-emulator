@@ -8,8 +8,10 @@ namespace Assembler {
     "lw $s0, $s0, 0x69\n"
     "test:\n"
     "#This is a comment\n"
-    " addi $s0, $s0, 0x69\n"
-    " addi $s0, $s0, 0x69\n"
+    " addi $s6, $s9, 0x69\n"
+    " addi $s4, $s2, -0x69\n"
+    " addi $s6, $s9, 420\n"
+    " addi $s4, $s2, -420\n"
     "j->test\n";
 
   std::string stripWhitespace(std::string asm_input){
@@ -26,7 +28,7 @@ namespace Assembler {
     std::string stripped = stripWhitespace(asm_input);
     std::string keyword_buffer = "";
     char next_char;
-    for(int i = 0; i < stripped.length(); i++){
+    for(size_t i = 0; i < stripped.length(); i++){
       char current_char = stripped[i];
       token token = {};
       if(current_char != '\n'){
@@ -93,6 +95,17 @@ namespace Assembler {
           token.value = keyword_buffer;
           keyword_buffer = "";
           tokens.push_back(token);
+          for(size_t j = i+3; j < stripped.size(); j++){
+            if(stripped[j] == '\n'){
+              token.type = TokenType::LABEL;
+              token.value = keyword_buffer;
+              keyword_buffer = "";
+              tokens.push_back(token);
+              i = j;
+              break;
+            }
+            keyword_buffer += stripped[j];
+          }
         /*
          * Grabs register keywords
          */
@@ -103,11 +116,14 @@ namespace Assembler {
           tokens.push_back(token);
           /*
            * Checks for hex values at the end of the line
+           * negative values will have a '-' in front of the hex value
+           * negative values will be converted to twos complement format
            */
-          if(stripped[i+2] == '0' && stripped[i+3] == 'x'){
+          if((stripped[i+2] == '0' && stripped[i+3] == 'x') ||
+            (stripped[i+2] == '-' && stripped[i+3] == '0' && stripped[i+4] == 'x')){
             for(size_t j = i+2; j < stripped.size(); j++){
               if(stripped[j] == '\n'){
-                token.type = TokenType::IMMEDIATE;
+                token.type = TokenType::HEX;
                 token.value = keyword_buffer;
                 keyword_buffer = "";
                 tokens.push_back(token);
@@ -116,6 +132,23 @@ namespace Assembler {
               }
               keyword_buffer += stripped[j];
             }
+          /*
+           * If we find a $ then we can assume it's a not hex and it's
+           * a decimal value. Negative values will be converted to twos complement
+           */
+          }else if(stripped[i+2] != '$'){
+            for(size_t j = i+2; j < stripped.size(); j++){
+              if(stripped[j] == '\n'){
+                token.type = TokenType::DECIMAL;
+                token.value = keyword_buffer;
+                keyword_buffer = "";
+                tokens.push_back(token);
+                i = j;
+                break;
+              }
+              keyword_buffer += stripped[j];
+            }
+
           }
         }
       /*

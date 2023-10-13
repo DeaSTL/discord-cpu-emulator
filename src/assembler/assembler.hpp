@@ -13,9 +13,8 @@ namespace Assembler{
     LABEL,
     INSTRUCTION,
     REGISTER,
-    IMMEDIATE,
-    COMMENT,
-    BRANCH,
+    HEX,
+    DECIMAL,
     JUMP,
     UNKNOWN
   };
@@ -25,7 +24,30 @@ namespace Assembler{
     std::string value;
     void print(){
       std::cout << "Token: " << value << " Type: ";
-      std::cout << type << std::endl;
+      switch(type){
+        case LABEL:
+          std::cout << "LABEL";
+          break;
+        case INSTRUCTION:
+          std::cout << "INSTRUCTION";
+          break;
+        case REGISTER:
+          std::cout << "REGISTER";
+          break;
+        case HEX:
+          std::cout << "HEX";
+          break;
+        case DECIMAL:
+          std::cout << "DECIMAL";
+          break;
+        case JUMP:
+          std::cout << "JUMP";
+          break;
+        case UNKNOWN:
+          std::cout << "UNKNOWN";
+          break;
+      };
+      std::cout << std::endl;
     };
   } token;
   typedef struct label{
