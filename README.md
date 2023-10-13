@@ -1,1 +1,1 @@
-# discord-cpu-emulator
+# mips32 discord-cpu-emulator
