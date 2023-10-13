@@ -49,7 +49,7 @@ namespace Cpu {
      * @example addiu $t0, $t1, 100
      */
     void addiu(std::shared_ptr<Cpu> cpu) {
-      cput->registers_gp[cpu->instruction_register->rt] = 
+      cpu->registers_gp[cpu->instruction_register->rt] = 
         cpu->registers_gp[cpu->instruction_register->rs] +
         cpu->instruction_register->imm;
 

@@ -5,14 +5,17 @@ LIBS = -ldpp
 BUILD_DIR = build
 SRC_DIR = src
 TEST_DIR = test
+ASSEMBLER_DIR = assembler
 INCLUDE_DIR = /usr/local/include
 LIB_DIR = /usr/local/lib
+
+BUILD_MODULES = $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/$(ASSEMBLER_DIR)/*.cpp)
 
 
 export LD_LIBRARY_PATH=/usr/local/lib
 
 build:
-	$(CC) $(SRC_DIR)/*.cpp -I $(INCLUDE_DIR) $(CFLAGS) -L$(LIB_DIR) $(LIBS) -o $(BUILD_DIR)/main.o
+	$(CC) $(BUILD_MODULES) -I $(INCLUDE_DIR) $(CFLAGS) -L$(LIB_DIR) $(LIBS) -o $(BUILD_DIR)/main.o
 
 run:
 	make build

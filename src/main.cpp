@@ -4,10 +4,13 @@
 #include "secrets.hpp"
 #include "cpu.hpp"
 #include <format>
+#include "assembler/assembler.hpp"
 
 
 int main(){
   using std::string;
+  using std::cout;
+  using std::endl;
 
 
   dpp::cluster bot(DISCORD_APPLICATION_TOKEN);
@@ -19,6 +22,9 @@ int main(){
   cpu->memory[2] = 0x69420;
   cpu->memory[3] = 0x42069;
   cpu->memory[4] = 0xdeadbeef;
+
+
+  Assembler::tokenize(Assembler::test_asm);
 
 
 
@@ -45,15 +51,46 @@ int main(){
         }
         mem_str->append("```");
         event.reply(mem_str->c_str());
+      }else if(event.command.get_command_name() == "dump_reg"){
+        string* reg_str = new string();
+        reg_str->append("```");
+        reg_str->append(std::format("ZERO: {:#04x}\n",cpu->registers_gp[REGISTER_ZERO]));
+        reg_str->append(std::format("AT: {:#04x}\n",cpu->registers_gp[REGISTER_AT]));
+        reg_str->append(std::format("V0: {:#04x}\n",cpu->registers_gp[REGISTER_V0]));
+        reg_str->append(std::format("V1: {:#04x}\n",cpu->registers_gp[REGISTER_V1]));
+        for(uint8_t i = 0; i < 8; i++){
+          reg_str->append(std::format("A{}: {:#04x} ",i,cpu->registers_gp[REGISTER_A_START + i]));
+        }
+        reg_str->append("\n");
+        for(uint8_t i = 0; i < 8; i++){
+          reg_str->append(std::format("T{}: {:#04x} ",i,cpu->registers_gp[REGISTER_T_START + i]));
+        }
+        reg_str->append("\n");
+        for(uint8_t i = 0; i < 8; i++){
+          reg_str->append(std::format("S{}: {:#04x} ",i,cpu->registers_gp[REGISTER_S_START + i]));
+        }
+        reg_str->append("\n");
+        reg_str->append(std::format("K0: {:#04x}\n",cpu->registers_gp[REGISTER_K0]));
+        reg_str->append(std::format("K1: {:#04x}\n",cpu->registers_gp[REGISTER_K1]));
+        reg_str->append(std::format("GP: {:#04x}\n",cpu->registers_gp[REGISTER_GP]));
+        reg_str->append(std::format("SP: {:#04x}\n",cpu->registers_gp[REGISTER_STACK_POINTER]));
+        reg_str->append(std::format("FP: {:#04x}\n",cpu->registers_gp[REGISTER_FRAME_POINTER]));
+        reg_str->append(std::format("RA: {:#04x}\n",cpu->registers_gp[REGISTER_RETURN_ADDRESS]));
+        reg_str->append("```");
+        event.reply(reg_str->c_str());
       }
-
     });
 
-  bot.on_ready([&bot](auto event) {
+  bot.on_ready([&bot](const dpp::ready_t &event) {
+    cout << "Logged in as " << bot.me.username << "!\n";
+
+
     if(dpp::run_once<struct register_bot_commands>()){
       dpp::slashcommand mem_dump_command("dump_mem", "Dumps the memory of the CPU",bot.me.id);
       mem_dump_command.add_option(dpp::command_option(dpp::co_string, "offset", "The offset to start dumping from", false));
       bot.global_command_create(mem_dump_command);
+      dpp::slashcommand reg_dump_command("dump_reg", "Dumps the registers of the CPU",bot.me.id);
+      bot.global_command_create(reg_dump_command);
     }
   });
 
