@@ -7,6 +7,7 @@ namespace Assembler {
   std::string test_asm = 
     "lw $s0, $s0, 0x69\n"
     "test:\n"
+    "#This is a comment\n"
     " addi $s0, $s0, 0x69\n"
     " addi $s0, $s0, 0x69\n"
     "j->test\n";
@@ -36,6 +37,14 @@ namespace Assembler {
            current_char != '$'
         ){
           keyword_buffer += current_char;
+        }
+        if(current_char == '#'){
+          for(size_t j = i; j < stripped.size(); j++){
+            if(stripped[j] == '\n'){
+              i = j+1;
+              break;
+            }
+          }
         }
         //Parses the instruction
         if(next_char == '$'){
