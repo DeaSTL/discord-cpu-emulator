@@ -55,7 +55,6 @@ namespace Assembler {
         }
         //Parses the instruction
         if(next_char == '$'){
-          std::cout << "Checking instruction: " << keyword_buffer << " with hash: " << hash(keyword_buffer) << std::endl;
           switch(hash(keyword_buffer)){
             case Cpu::instructions::ADDI.hash:
               token.type = TokenType::INSTRUCTION;
@@ -105,7 +104,7 @@ namespace Assembler {
          * by checking for the '->' symbol
          */
         }else if(next_char == '-' && stripped[i+2] == '>'){
-          token.type = TokenType::JUMP;
+          token.type = TokenType::INSTRUCTION;
           token.value = keyword_buffer;
           token.line = line;
           token.column = column;
@@ -183,9 +182,6 @@ namespace Assembler {
         line++;
         column = 0;
       }
-    }
-    for(token t: tokens){
-      t.print();
     }
     return tokens;
   };

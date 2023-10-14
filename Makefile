@@ -22,7 +22,7 @@ run:
 	$(BUILD_DIR)/main.o
 
 test:
-	$(CC) $(filter-out $(SRC_DIR)/main.cpp, $(wildcard $(SRC_DIR)/*.cpp)) $(TEST_DIR)/*.cpp -I $(INCLUDE_DIR) $(CFLAGS) -L$(LIB_DIR) $(LIBS) -o $(BUILD_DIR)/test.o
+	$(CC) $(filter-out $(SRC_DIR)/main.cpp $(ASSEMBLER_DIR)/test.cpp, $(BUILD_MODULES)) $(TEST_DIR)/*.cpp -I $(INCLUDE_DIR) $(CFLAGS) -L$(LIB_DIR) $(LIBS) -o $(BUILD_DIR)/test.o
 	$(BUILD_DIR)/test.o
 
 clean:
