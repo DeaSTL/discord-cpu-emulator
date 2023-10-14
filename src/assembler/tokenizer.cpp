@@ -1,4 +1,5 @@
 #include "assembler.hpp"
+#include "../cpu.hpp"
 #include <iostream>
 
 
@@ -8,10 +9,10 @@ namespace Assembler {
     "lw $s0, $s0, 0x69\n"
     "test:\n"
     "#This is a comment\n"
-    " addi $s6, $s9, 0x69\n"
-    " addi $s4, $s2, -0x69\n"
-    " addi $s6, $s9, 420\n"
-    " addi $s4, $s2, -420\n"
+    " addi $s6 $s9, 0x69\n"
+    " addi $s4 $s2, -0x69\n"
+    " addi $s6 $s9, 420\n"
+    " addi $s4 $s2, -420\n"
     "j->test\n";
 
   std::string stripWhitespace(std::string asm_input){
@@ -28,6 +29,8 @@ namespace Assembler {
     std::string stripped = stripWhitespace(asm_input);
     std::string keyword_buffer = "";
     char next_char;
+    int column = 0;
+    int line = 0;
     for(size_t i = 0; i < stripped.length(); i++){
       char current_char = stripped[i];
       token token = {};
@@ -39,11 +42,13 @@ namespace Assembler {
            current_char != '$'
         ){
           keyword_buffer += current_char;
+          column++;
         }
         if(current_char == '#'){
           for(size_t j = i; j < stripped.size(); j++){
             if(stripped[j] == '\n'){
               i = j+1;
+              line++;
               break;
             }
           }
@@ -52,38 +57,47 @@ namespace Assembler {
         if(next_char == '$'){
           std::cout << "Checking instruction: " << keyword_buffer << " with hash: " << hash(keyword_buffer) << std::endl;
           switch(hash(keyword_buffer)){
-            case InstructionHash::ADDI:
+            case Cpu::instructions::ADDI.hash:
               token.type = TokenType::INSTRUCTION;
               token.value = "addi";
+              token.line = line;
+              token.column = column;
               keyword_buffer = "";
               tokens.push_back(token);
               break;
-            case InstructionHash::ADD:
+            case Cpu::instructions::ADD.hash:
               token.type = TokenType::INSTRUCTION;
               token.value = "add";
+              token.line = line;
+              token.column = column;
               keyword_buffer = "";
               tokens.push_back(token);
               break;
-            case InstructionHash::J:
+            case Cpu::instructions::SUB.hash:
               token.type = TokenType::INSTRUCTION;
               token.value = "j";
+              token.line = line;
+              token.column = column;
               keyword_buffer = "";
               tokens.push_back(token);
               break;
-            case InstructionHash::LW:
+            case Cpu::instructions::LW.hash: 
               token.type = TokenType::INSTRUCTION;
               token.value = "lw";
+              token.line = line;
+              token.column = column;
               keyword_buffer = "";
               tokens.push_back(token);
               break;
           }
         /*
-         * Parses the lebel
-         * TODO: Record the line number
+         * Parses the label
          */
         }else if(next_char == ':'){
           token.type = TokenType::LABEL;
           token.value = keyword_buffer;
+          token.line = line;
+          token.column = column;
           keyword_buffer = "";
           tokens.push_back(token);
         /*
@@ -93,12 +107,16 @@ namespace Assembler {
         }else if(next_char == '-' && stripped[i+2] == '>'){
           token.type = TokenType::JUMP;
           token.value = keyword_buffer;
+          token.line = line;
+          token.column = column;
           keyword_buffer = "";
           tokens.push_back(token);
           for(size_t j = i+3; j < stripped.size(); j++){
             if(stripped[j] == '\n'){
               token.type = TokenType::LABEL;
               token.value = keyword_buffer;
+              token.line = line;
+              token.column = column;
               keyword_buffer = "";
               tokens.push_back(token);
               i = j;
@@ -112,6 +130,8 @@ namespace Assembler {
         }else if(next_char == ','){
           token.type = TokenType::REGISTER;
           token.value = keyword_buffer;
+          token.line = line;
+          token.column = column;
           keyword_buffer = "";
           tokens.push_back(token);
           /*
@@ -125,6 +145,8 @@ namespace Assembler {
               if(stripped[j] == '\n'){
                 token.type = TokenType::HEX;
                 token.value = keyword_buffer;
+                token.line = line;
+                token.column = column;
                 keyword_buffer = "";
                 tokens.push_back(token);
                 i = j;
@@ -141,6 +163,8 @@ namespace Assembler {
               if(stripped[j] == '\n'){
                 token.type = TokenType::DECIMAL;
                 token.value = keyword_buffer;
+                token.line = line;
+                token.column = column;
                 keyword_buffer = "";
                 tokens.push_back(token);
                 i = j;
@@ -148,7 +172,6 @@ namespace Assembler {
               }
               keyword_buffer += stripped[j];
             }
-
           }
         }
       /*
@@ -157,6 +180,8 @@ namespace Assembler {
        */
       } else {
         keyword_buffer = "";
+        line++;
+        column = 0;
       }
     }
     for(token t: tokens){

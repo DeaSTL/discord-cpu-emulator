@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 #include "stdio.h"
+#include <memory>
+
 
 namespace Test{
   using std::string;
@@ -98,7 +100,7 @@ namespace Test{
       instruction |= shamt << 6;
       instruction |= funct;
       cout << "Testing " << RInstructions[i].name << endl;
-      Cpu::Instruction* parsed_instruction = Cpu::parseRawInstruction(instruction);
+      std::shared_ptr<Cpu::instruction> parsed_instruction = Cpu::parseRawInstruction(instruction);
       printf("Instruction: %s\n", name.c_str());
       printf("Opcode Expected: %x Got: %x\n", opcode, parsed_instruction->opcode);
       printf("rs Expected: %x Got: %x\n", rs, parsed_instruction->rs);
@@ -134,7 +136,7 @@ namespace Test{
       instruction |= rt << 16;
       instruction |= immediate;
       cout << "Testing " << IInstructions[i].name << endl;
-      Cpu::Instruction* parsed_instruction = Cpu::parseRawInstruction(instruction);
+      std::shared_ptr<Cpu::instruction> parsed_instruction = Cpu::parseRawInstruction(instruction);
       printf("Instruction: %s\n", name.c_str());
       printf("Opcode Expected: %x Got: %x\n", opcode, parsed_instruction->opcode);
       printf("rs Expected: %x Got: %x\n", rs, parsed_instruction->rs);
@@ -162,7 +164,7 @@ namespace Test{
       instruction |= opcode << 26;
       instruction |= address;
       cout << "Testing " << JInstructions[i].name << endl;
-      Cpu::Instruction* parsed_instruction = Cpu::parseRawInstruction(instruction);
+      std::shared_ptr<Cpu::instruction> parsed_instruction = Cpu::parseRawInstruction(instruction);
       printf("Instruction: %s\n", name.c_str());
       printf("Opcode Expected: %x Got: %x\n", opcode, parsed_instruction->opcode);
       printf("address Expected: %x Got: %x\n", address, parsed_instruction->addr);

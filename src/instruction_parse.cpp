@@ -1,232 +1,248 @@
 #include "cpu.hpp"
+#include <memory>
 
 
 namespace Cpu {
-  Instruction* parseRInstruction(uint32_t raw_instruction){
+  std::shared_ptr<instruction> parseRInstruction(uint32_t raw_instruction){
     uint8_t opcode = (raw_instruction >> OPCODE_OFF) & OPCODE_MASK;
     uint8_t rs = (raw_instruction >> R_TYPE_RS_OFF) & R_TYPE_RS_MASK;
     uint8_t rt = (raw_instruction >> R_TYPE_RT_OFF) & R_TYPE_RT_MASK;
     uint8_t rd = (raw_instruction >> R_TYPE_RD_OFF) & R_TYPE_RD_MASK;
     uint8_t shamt = (raw_instruction >> R_TYPE_SHAMT_OFF) & R_TYPE_SHAMT_MASK;
     uint8_t funct = (raw_instruction >> R_TYPE_FUNCT_OFF) & R_TYPE_FUNCT_MASK;
-    Instruction* instruction = new Instruction();
-    instruction->opcode = opcode;
-    instruction->rs = rs;
-    instruction->rt = rt;
-    instruction->rd = rd;
-    instruction->shamt = shamt;
-    instruction->funct = funct;
-    instruction->type = instructionTypes::R;
-    instruction->fetch_raw = raw_instruction;
-    instruction->valid = true;
-    switch(instruction->funct){
+    instruction _current_instruction = {};
+
+    _current_instruction.opcode = opcode;
+    _current_instruction.rs = rs;
+    _current_instruction.rt = rt;
+    _current_instruction.rd = rd;
+    _current_instruction.shamt = shamt;
+    _current_instruction.funct = funct;
+    _current_instruction.type = InstructionType::R;
+    _current_instruction.raw_instruction = raw_instruction;
+    _current_instruction.valid = true;
+
+    std::shared_ptr<instruction> current_instruction = std::make_shared<instruction>(_current_instruction);
+    switch(current_instruction->funct){
       case R_FUNCTION_ADD:
-        instruction->id = INS_ADD;
-        return instruction;
+        current_instruction->id = INS_ADD;
+        return current_instruction;
         break;
       case R_FUNCTION_ADDU:
-        instruction->id = INS_ADDU;
-        return instruction;
+        current_instruction->id = INS_ADDU;
+        return current_instruction;
         break;
       case R_FUNCTION_AND:
-        instruction->id = INS_AND; 
-        return instruction;
+        current_instruction->id = INS_AND; 
+        return current_instruction;
         break;
       case R_FUNCTION_DIV:
-        instruction->id = INS_DIV; 
-        return instruction;
+        current_instruction->id = INS_DIV; 
+        return current_instruction;
         break;
       case R_FUNCTION_DIVU:
-        instruction->id = INS_DIVU; 
-        return instruction;
+        current_instruction->id = INS_DIVU; 
+        return current_instruction;
         break;
       case R_FUNCTION_JALR:
-        instruction->id = INS_JALR;
-        return instruction;
+        current_instruction->id = INS_JALR;
+        return current_instruction;
         break;
       case R_FUNCTION_JR:
-        instruction->id = INS_JR;
-        return instruction;
+        current_instruction->id = INS_JR;
+        return current_instruction;
         break;
       case R_FUNCTION_MFHI:
-        instruction->id = INS_MFHI;
-        return instruction;
+        current_instruction->id = INS_MFHI;
+        return current_instruction;
         break;
       case R_FUNCTION_MFLO:
-        instruction->id = INS_MFLO;
-        return instruction;
+        current_instruction->id = INS_MFLO;
+        return current_instruction;
         break;
       case R_FUNCTION_MTHI:
-        instruction->id = INS_MTHI;
-        return instruction;
+        current_instruction->id = INS_MTHI;
+        return current_instruction;
         break;
       case R_FUNCTION_MTLO:
-        instruction->id = INS_MTLO;
-        return instruction;
+        current_instruction->id = INS_MTLO;
+        return current_instruction;
         break;
       case R_FUNCTION_MULT:
-        instruction->id = INS_MULT;
-        return instruction;
+        current_instruction->id = INS_MULT;
+        return current_instruction;
         break;
       case R_FUNCTION_MULTU:
-        instruction->id = INS_MULTU;
-        return instruction;
+        current_instruction->id = INS_MULTU;
+        return current_instruction;
         break;
       case R_FUNCTION_NOR:
-        instruction->id = INS_NOR;
-        return instruction;
+        current_instruction->id = INS_NOR;
+        return current_instruction;
         break;
       case R_FUNCTION_OR:
-        instruction->id = INS_OR;
-        return instruction;
+        current_instruction->id = INS_OR;
+        return current_instruction;
         break;
       case R_FUNCTION_SLL:
-        instruction->id = INS_SLL;
-        return instruction;
+        current_instruction->id = INS_SLL;
+        return current_instruction;
         break;
       case R_FUNCTION_SLT:
-        instruction->id = INS_SLT;
-        return instruction;
+        current_instruction->id = INS_SLT;
+        return current_instruction;
         break;
       case R_FUNCTION_SLTU:
-        instruction->id = INS_SLTU;
-        return instruction;
+        current_instruction->id = INS_SLTU;
+        return current_instruction;
         break;
       case R_FUNCTION_SRA:
-        instruction->id = INS_SRA;
-        return instruction;
+        current_instruction->id = INS_SRA;
+        return current_instruction;
         break;
       case R_FUNCTION_SRL:
-        instruction->id = INS_SRL;
-        return instruction;
+        current_instruction->id = INS_SRL;
+        return current_instruction;
         break;
       case R_FUNCTION_SUB:
-        instruction->id = INS_SUB;
-        return instruction;
+        current_instruction->id = INS_SUB;
+        return current_instruction;
         break;
       case R_FUNCTION_SUBU:
-        instruction->id = INS_SUBU;
-        return instruction;
+        current_instruction->id = INS_SUBU;
+        return current_instruction;
         break;
     }
-    instruction->valid = false;
-    return instruction;
+    current_instruction->valid = false;
+    return current_instruction;
   }
-  Instruction* parseJInstruction(uint32_t raw_instruction){
+  std::shared_ptr<instruction> parseJInstruction(uint32_t raw_instruction){
     uint8_t opcode = (raw_instruction >> OPCODE_OFF) & OPCODE_MASK;
     uint32_t addr = (raw_instruction >> J_TYPE_ADDR_OFF) & J_TYPE_ADDR_MASK;
-    Instruction* instruction = new Instruction();
+    instruction _current_instruction = {};
 
-    instruction->opcode = opcode;
-    instruction->addr = addr;
-    instruction->type = instructionTypes::J;
-    instruction->fetch_raw = raw_instruction;
-    instruction->valid = true;
-    switch(instruction->opcode){
+    _current_instruction.opcode = opcode;
+    _current_instruction.addr = addr;
+    _current_instruction.type = InstructionType::J;
+    _current_instruction.raw_instruction = raw_instruction;
+    _current_instruction.valid = true;
+
+    std::shared_ptr<instruction> current_instruction = std::make_shared<instruction>(_current_instruction);
+
+    switch(current_instruction->opcode){
       case J_FUNCTION_J:
-        instruction->id = INS_J;
-        return instruction;
+        current_instruction->id = INS_J;
+        return current_instruction;
         break;
       case J_FUNCTION_JAL:
-        instruction->id = INS_JAL;
-        return instruction;
+        current_instruction->id = INS_JAL;
+        return current_instruction;
         break;
     }
-    instruction->valid = false;
-    return instruction;
+    current_instruction->valid = false;
+    return current_instruction;
   }
-  Instruction* parseIInstruction(uint32_t raw_instruction){
+  std::shared_ptr<instruction> parseIInstruction(uint32_t raw_instruction){
     uint8_t opcode = (raw_instruction >> OPCODE_OFF) & OPCODE_MASK;
     uint8_t rs = (raw_instruction >> I_TYPE_RS_OFF) & I_TYPE_RS_MASK;
     uint8_t rt = (raw_instruction >> I_TYPE_RT_OFF) & I_TYPE_RT_MASK;
     uint16_t imm = (raw_instruction >> I_TYPE_IMM_OFF) & I_TYPE_IMM_MASK;
-    Instruction* instruction = new Instruction();
-    instruction->opcode = opcode;
-    instruction->rs = rs;
-    instruction->rt = rt;
-    instruction->imm = imm;
-    instruction->type = instructionTypes::I;
-    instruction->fetch_raw = raw_instruction;
-    instruction->valid = true;
-    switch(instruction->opcode){
+    instruction _current_instruction = {};
+
+    _current_instruction.opcode = opcode;
+    _current_instruction.rs = rs;
+    _current_instruction.rt = rt;
+    _current_instruction.imm = imm;
+    _current_instruction.type = InstructionType::I;
+    _current_instruction.raw_instruction = raw_instruction;
+    _current_instruction.valid = true;
+
+    std::shared_ptr<instruction> current_instruction = std::make_shared<instruction>(_current_instruction);
+    switch(current_instruction->opcode){
       case I_FUNCTION_ADDI:
-        instruction->id = INS_ADDI;
-        return instruction;
+        current_instruction->id = INS_ADDI;
+        return current_instruction;
         break;
       case I_FUNCTION_ADDIU:
-        instruction->id = INS_ADDIU;
-        return instruction;
+        current_instruction->id = INS_ADDIU;
+        return current_instruction;
         break;
       case I_FUNCTION_ANDI:
-        instruction->id = INS_ANDI;
-        return instruction;
+        current_instruction->id = INS_ANDI;
+        return current_instruction;
         break;
       case I_FUNCTION_BEQ:
-        instruction->id = INS_BEQ;
-        return instruction;
+        current_instruction->id = INS_BEQ;
+        return current_instruction;
         break;
       case I_FUNCTION_BGTZ:
-        instruction->id = INS_BGTZ;
-        return instruction;
+        current_instruction->id = INS_BGTZ;
+        return current_instruction;
         break;
       case I_FUNCTION_BLEZ:
-        instruction->id = INS_BLEZ;
-        return instruction;
+        current_instruction->id = INS_BLEZ;
+        return current_instruction;
         break;
       case I_FUNCTION_BNE:
-        instruction->id = INS_BNE;
-        return instruction;
+        current_instruction->id = INS_BNE;
+        return current_instruction;
         break;
       case I_FUNCTION_LB:
-        instruction->id = INS_LB;
-        return instruction;
+        current_instruction->id = INS_LB;
+        return current_instruction;
         break;
       case I_FUNCTION_LBU:
-        instruction->id = INS_LBU;
-        return instruction;
+        current_instruction->id = INS_LBU;
+        return current_instruction;
         break;
       case I_FUNCTION_LHU:
-        instruction->id = INS_LHU;
-        return instruction;
+        current_instruction->id = INS_LHU;
+        return current_instruction;
         break;
       case I_FUNCTION_LUI:
-        instruction->id = INS_LUI;
-        return instruction;
+        current_instruction->id = INS_LUI;
+        return current_instruction;
         break;
       case I_FUNCTION_LW:
-        instruction->id = INS_LW;
-        return instruction;
+        current_instruction->id = INS_LW;
+        return current_instruction;
         break;
       case I_FUNCTION_ORI:
-        instruction->id = INS_ORI;
-        return instruction;
+        current_instruction->id = INS_ORI;
+        return current_instruction;
         break;
       case I_FUNCTION_SB:
-        instruction->id = INS_SB;
-        return instruction;
+        current_instruction->id = INS_SB;
+        return current_instruction;
         break;
       case I_FUNCTION_SH:
-        instruction->id = INS_SH;
-        return instruction;
+        current_instruction->id = INS_SH;
+        return current_instruction;
         break;
       case I_FUNCTION_SLTI:
-        instruction->id = INS_SLTI;
-        return instruction;
+        current_instruction->id = INS_SLTI;
+        return current_instruction;
         break;
       case I_FUNCTION_SLTIU:
-        instruction->id = INS_SLTIU;
-        return instruction;
+        current_instruction->id = INS_SLTIU;
+        return current_instruction;
         break;
       case I_FUNCTION_SW:
-        instruction->id = INS_SW;
-        return instruction;
+        current_instruction->id = INS_SW;
+        return current_instruction;
         break;
     }
-    instruction->valid = false;
-    return instruction;
+    current_instruction->valid = false;
+    return current_instruction;
   }
-  Instruction* parseRawInstruction(uint32_t raw_instruction){
+  std::shared_ptr<instruction> parseRawInstruction(uint32_t raw_instruction){
     uint8_t opcode = raw_instruction >> 26;
+    instruction _current_instruction = {};
+    _current_instruction.opcode = opcode;
+    _current_instruction.type = InstructionType::INVALID;
+    _current_instruction.raw_instruction = raw_instruction;
+    _current_instruction.valid = true;
+    std::shared_ptr<instruction> current_instruction = std::make_shared<instruction>(_current_instruction);
 
     switch(opcode){
       //R-Type instructions
@@ -304,8 +320,7 @@ namespace Cpu {
       case 0x2B:
         return parseIInstruction(raw_instruction);
         break;
-        break;
     }
-    return new Instruction();
+    return current_instruction;
   }
 }

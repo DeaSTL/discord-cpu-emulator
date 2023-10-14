@@ -2,194 +2,48 @@
 #include "stdint.h"
 #include <string>
 #include <memory>
+#include "cpu_constants.hpp"
 
 
-#define MEMORY_MAX 0xF000000 // 16MB
-
-
-#define REGISTER_ZERO 0
-#define REGISTER_AT 1
-#define REGISTER_V0 2
-#define REGISTER_V1 3
-#define REGISTER_A_START 4
-#define REGISTER_A_END 7
-#define REGISTER_T_START 8
-#define REGISTER_T_END 15
-#define REGISTER_S_START 16
-#define REGISTER_S_END 23
-#define REGISTER_K0 26
-#define REGISTER_K1 27
-#define REGISTER_GP 28
-#define REGISTER_STACK_POINTER 29
-#define REGISTER_FRAME_POINTER 30
-#define REGISTER_RETURN_ADDRESS 31
-
-
-#define OPCODE_OFF 26 // + 6
-#define OPCODE_MASK 0b111111
-
-#define R_TYPE_RS_OFF 21 // + 5
-#define R_TYPE_RS_MASK 0b11111
-#define R_TYPE_RT_OFF 16 // + 5
-#define R_TYPE_RT_MASK 0b11111
-#define R_TYPE_RD_OFF 11 // + 5
-#define R_TYPE_RD_MASK 0b11111
-#define R_TYPE_SHAMT_OFF 6 // + 5
-#define R_TYPE_SHAMT_MASK 0b11111
-#define R_TYPE_FUNCT_OFF 0 // + 6
-#define R_TYPE_FUNCT_MASK 0b111111
-
-#define I_TYPE_RS_OFF 21 // + 5
-#define I_TYPE_RS_MASK 0b11111
-#define I_TYPE_RT_OFF 16 // + 5
-#define I_TYPE_RT_MASK 0b11111
-#define I_TYPE_IMM_OFF 0 // + 16
-#define I_TYPE_IMM_MASK 0xFFFF // 16 bits
-
-#define J_TYPE_ADDR_OFF 0 // + 26
-#define J_TYPE_ADDR_MASK 0x3FFFFFF // 26 bits
-
-#define R_FUNCTION_ADD 0x20
-#define R_FUNCTION_ADDU 0x21
-#define R_FUNCTION_AND 0x24
-#define R_FUNCTION_DIV 0x1A
-#define R_FUNCTION_DIVU 0x1B
-#define R_FUNCTION_JALR 0x09
-#define R_FUNCTION_JR 0x08
-#define R_FUNCTION_MFHI 0x10
-#define R_FUNCTION_MFLO 0x12
-#define R_FUNCTION_MTHI 0x11
-#define R_FUNCTION_MTLO 0x13
-#define R_FUNCTION_MULT 0x18
-#define R_FUNCTION_MULTU 0x19
-#define R_FUNCTION_NOR 0x27
-#define R_FUNCTION_OR 0x25
-#define R_FUNCTION_SLL 0x00
-#define R_FUNCTION_SLT 0x2A
-#define R_FUNCTION_SLTU 0x2B
-#define R_FUNCTION_SRA 0x03
-#define R_FUNCTION_SRL 0x02
-#define R_FUNCTION_SUB 0x22
-#define R_FUNCTION_SUBU 0x23
-#define R_FUNCTION_XOR 0x26
-
-
-#define J_FUNCTION_J 0x02
-#define J_FUNCTION_JAL 0x03
-
-#define I_FUNCTION_ADDI 0x08
-#define I_FUNCTION_ADDIU 0x09
-#define I_FUNCTION_ANDI 0x0C
-#define I_FUNCTION_BEQ 0x04
-#define I_FUNCTION_BGTZ 0x07
-#define I_FUNCTION_BLEZ 0x06
-#define I_FUNCTION_BNE 0x05
-#define I_FUNCTION_LB 0x20
-#define I_FUNCTION_LBU 0x24
-#define I_FUNCTION_LH 0x21
-#define I_FUNCTION_LHU 0x25
-#define I_FUNCTION_LUI 0x0F
-#define I_FUNCTION_LW 0x23
-#define I_FUNCTION_LWL 0x22
-#define I_FUNCTION_LWR 0x26
-#define I_FUNCTION_ORI 0x0D
-#define I_FUNCTION_SB 0x28
-#define I_FUNCTION_SH 0x29
-#define I_FUNCTION_SLTI 0x0A
-#define I_FUNCTION_SLTIU 0x0B
-#define I_FUNCTION_SW 0x2B
-
-#define INS_ADD 0x1
-#define INS_ADDU 0x2
-#define INS_AND 0x3
-#define INS_DIV 0x4
-#define INS_DIVU 0x5
-#define INS_JALR 0x6
-#define INS_JR 0x7
-#define INS_MFHI 0x8
-#define INS_MFLO 0x9
-#define INS_MTHI 0xA
-#define INS_MTLO 0xB
-#define INS_MULT 0xC
-#define INS_MULTU 0xD
-#define INS_NOR 0xE
-#define INS_OR 0xF
-#define INS_SLL 0x10
-#define INS_SLT 0x11
-#define INS_SLTU 0x12
-#define INS_SRA 0x13
-#define INS_SRL 0x14
-#define INS_SUB 0x15
-#define INS_SUBU 0x16
-#define INS_XOR 0x17
-#define INS_J 0x18
-#define INS_JAL 0x19
-#define INS_ADDI 0x1A
-#define INS_ADDIU 0x1B
-#define INS_ANDI 0x1C
-#define INS_BEQ 0x1D
-#define INS_BGTZ 0x1E
-#define INS_BLEZ 0x1F
-#define INS_BNE 0x20
-#define INS_LB 0x21
-#define INS_LBU 0x22
-#define INS_LH 0x23
-#define INS_LHU 0x24
-#define INS_LUI 0x25
-#define INS_LW 0x26
-#define INS_LWL 0x27
-#define INS_LWR 0x28
-#define INS_ORI 0x29
-#define INS_SB 0x2A
-#define INS_SH 0x2B
-#define INS_SLTI 0x2C
-#define INS_SLTIU 0x2D
-#define INS_SW 0x2E
 
 
 
 namespace Cpu{
+
   using std::string;
   class Cpu;
 
-
-
-  enum instructionTypes {
+  enum InstructionType {
     R,
     I,
     J,
     FR,
-    FI
+    FI,
+    INVALID
   };
-  class Instruction{
-    public:
-      uint32_t fetch_raw;
-      int id;
-      uint8_t opcode;
-      //R instructions
-      uint8_t rs;
-      uint8_t rt;
-      uint8_t rd;
-      uint8_t shamt;
-      int8_t funct;
-      //I instructions
-      uint16_t imm;
-      //J instructions
-      uint32_t addr;
-      //FR instructions
-      //Describe the format of the instruction
-      uint8_t fmt;
-      uint8_t ft;
-      uint8_t fs;
-      uint8_t fd;
-      instructionTypes type;
-      bool valid;
-      Instruction(uint8_t opcode, int8_t funct, instructionTypes type, int id, void (*execution_callback)(std::shared_ptr<Cpu> cpu));
-      Instruction();
-      void (*execution_callback)(std::shared_ptr<Cpu> cpu);
-      void print();
+  struct instruction {
+    std::string name {""};
+    uint32_t id {0};
+    InstructionType type {INVALID};
+    uint32_t raw_instruction{0};
+    const int hash;
+    uint8_t opcode{0};
+    uint8_t rs{0};
+    uint8_t rt{0};
+    uint8_t rd{0};
+    uint8_t shamt{0};
+    uint8_t funct{0};
+    uint16_t imm{0};
+    uint32_t addr{0};
+    uint8_t fmt{0};
+    uint8_t ft{0};
+    uint8_t fs{0};
+    uint8_t fd{0};
+    bool valid{false};
+    void execute(std::shared_ptr<Cpu> cpu);
+    void print();
   };
-  Instruction* parseRawInstruction(uint32_t raw_instruction);
+  std::shared_ptr<instruction> parseRawInstruction(uint32_t raw_instruction);
   class Cpu {
     public:
       // General purpose registers
@@ -224,7 +78,7 @@ namespace Cpu{
       // Physical memory
       uint32_t memory[MEMORY_MAX]; // 16MB
       // Current instruction being executed
-      Instruction* instruction_register;
+      instruction* instruction_register;
       /*
        * Initializes the cpu and returns true if successful
        */
@@ -305,49 +159,72 @@ namespace Cpu{
 
 
   }
+  constexpr int hash(std::string str){
+    int hash = 0;
+    int constants[9] = {
+      0xdead,
+      0xbeef,
+      0xDEAF,
+      0xbabe5,
+      0x1337,
+      0x42069,
+      0xDEC0DE,
+      0xDEFC0,
+      0xC0FFEE
+    };
+    for(size_t i = 0; i < str.length(); i++){
+      hash += str[i];
+      hash &= (hash << 15);
+      hash ^= (hash >> 30);
+      hash += str[i];
+      hash ^= (constants[i % 9]);
+    }
+    return hash;
+  }
+
   namespace instructions {
-    extern Instruction ADD;
-    extern Instruction ADDI;
-    extern Instruction ADDIU;
-    extern Instruction ADDU;
-    extern Instruction AND;
-    extern Instruction ANDI;
-    extern Instruction BEQ;
-    extern Instruction BLEZ;
-    extern Instruction BNE;
-    extern Instruction BGTZ;
-    extern Instruction DIV;
-    extern Instruction DIVU;
-    extern Instruction J;
-    extern Instruction JAL;
-    extern Instruction JALR;
-    extern Instruction JR;
-    extern Instruction LB;
-    extern Instruction LBU;
-    extern Instruction LHU;
-    extern Instruction LUI;
-    extern Instruction LW;
-    extern Instruction MFHI;
-    extern Instruction MTHI;
-    extern Instruction MFLO;
-    extern Instruction MTLO;
-    extern Instruction MULT;
-    extern Instruction MULTU;
-    extern Instruction NOR;
-    extern Instruction XOR;
-    extern Instruction OR;
-    extern Instruction ORI;
-    extern Instruction SB;
-    extern Instruction SH;
-    extern Instruction SLT;
-    extern Instruction SLTI;
-    extern Instruction SLTIU;
-    extern Instruction SLTU;
-    extern Instruction SLL;
-    extern Instruction SRL;
-    extern Instruction SRA;
-    extern Instruction SUB;
-    extern Instruction SUBU;
-    extern Instruction SW;
+    constexpr instruction ADD = {.name = "ADD",.type = InstructionType::R,.hash=hash("add"),.opcode = 0,.funct = 32};
+    constexpr instruction ADDI = {.name = "ADDI",.type = InstructionType::I,.hash=hash("addi"),.opcode = 8};
+    constexpr instruction ADDIU = {.name = "ADDIU",.type = InstructionType::I,.hash=hash("addiu"),.opcode = 9};
+    constexpr instruction ADDU = {.name = "ADDU",.type = InstructionType::R,.hash=hash("addu"),.opcode = 0,.funct = 33};
+    constexpr instruction AND = {.name = "AND",.type = InstructionType::R,.hash=hash("and"),.opcode = 0,.funct = 36};
+    constexpr instruction ANDI = {.name = "ANDI",.type = InstructionType::I,.hash=hash("andi"),.opcode = 12};
+    constexpr instruction BEQ{.name = "BEQ",.type = InstructionType::I,.hash=hash("beq"),.opcode = 4};
+    constexpr instruction BLEZ{.name = "BLEZ",.type = InstructionType::I,.hash=hash("blez"),.opcode = 6};
+    constexpr instruction BNE{.name = "BNE",.type = InstructionType::I,.hash=hash("bne"),.opcode = 5};
+    constexpr instruction BGTZ{.name = "BGTZ",.type = InstructionType::I,.hash=hash("bgtz"),.opcode = 7};
+    constexpr instruction DIV{.name = "DIV",.type = InstructionType::R,.hash=hash("div"),.opcode = 0,.funct = 26};
+    constexpr instruction DIVU{.name = "DIVU",.type = InstructionType::R,.hash=hash("divu"),.opcode = 0,.funct = 27};
+    constexpr instruction J_{.name = "J",.type = InstructionType::J,.hash=hash("j"),.opcode = 2};
+    constexpr instruction JAL{.name = "JAL",.type = InstructionType::J,.hash=hash("jal"),.opcode = 3};
+    constexpr instruction JALR{.name = "JALR",.type = InstructionType::R,.hash=hash("jalr"),.opcode = 0,.funct = 9};
+    constexpr instruction JR{.name = "JR",.type = InstructionType::R,.hash=hash("jr"),.opcode = 0,.funct = 8};
+    constexpr instruction LB{.name = "LB",.type = InstructionType::I,.hash=hash("lb"),.opcode = 32};
+    constexpr instruction LBU{.name = "LBU",.type = InstructionType::I,.hash=hash("lbu"),.opcode = 36};
+    constexpr instruction LHU{.name = "LHU",.type = InstructionType::I,.hash=hash("lhu"),.opcode = 37};
+    constexpr instruction LUI{.name = "LUI",.type = InstructionType::I,.hash=hash("lui"),.opcode = 15};
+    constexpr instruction LW{.name = "LW",.type = InstructionType::I,.hash=hash("lw"),.opcode = 35};
+    constexpr instruction MFHI{.name = "MFHI",.type = InstructionType::R,.hash=hash("mfhi"),.opcode = 0,.funct = 16};
+    constexpr instruction MTHI{.name = "MTHI",.type = InstructionType::R,.hash=hash("mthi"),.opcode = 0,.funct = 17};
+    constexpr instruction MFLO{.name = "MFLO",.type = InstructionType::R,.hash=hash("mflo"),.opcode = 0,.funct = 18};
+    constexpr instruction MTLO{.name = "MTLO",.type = InstructionType::R,.hash=hash("mtlo"),.opcode = 0,.funct = 19};
+    constexpr instruction MULT{.name = "MULT",.type = InstructionType::R,.hash=hash("mult"),.opcode = 0,.funct = 24};
+    constexpr instruction MULTU{.name = "MULTU",.type = InstructionType::R,.hash=hash("multu"),.opcode = 0,.funct = 25};
+    constexpr instruction NOR{.name = "NOR",.type = InstructionType::R,.hash=hash("nor"),.opcode = 0,.funct = 39};
+    constexpr instruction XOR{.name = "XOR",.type = InstructionType::R,.hash=hash("xor"),.opcode = 0,.funct = 38};
+    constexpr instruction OR{.name = "OR",.type = InstructionType::R,.hash=hash("or"),.opcode = 0,.funct = 37};
+    constexpr instruction ORI{.name = "ORI",.type = InstructionType::I,.hash=hash("ori"),.opcode = 13};
+    constexpr instruction SB{.name = "SB",.type = InstructionType::I,.hash=hash("sb"),.opcode = 40};
+    constexpr instruction SH{.name = "SH",.type = InstructionType::I,.hash=hash("sh"),.opcode = 41};
+    constexpr instruction SLT{.name = "SLT",.type = InstructionType::R,.hash=hash("slt"),.opcode = 0,.funct = 42};
+    constexpr instruction SLTI{.name = "SLTI",.type = InstructionType::I,.hash=hash("slti"),.opcode = 10};
+    constexpr instruction SLTIU{.name = "SLTIU",.type = InstructionType::I,.hash=hash("sltiu"),.opcode = 11};
+    constexpr instruction SLTU{.name = "SLTU",.type = InstructionType::R,.hash=hash("sltu"),.opcode = 0,.funct = 43};
+    constexpr instruction SLL{.name = "SLL",.type = InstructionType::R,.hash=hash("sll"),.opcode = 0,.funct = 0};
+    constexpr instruction SRL{.name = "SRL",.type = InstructionType::R,.hash=hash("srl"),.opcode = 0,.funct = 2};
+    constexpr instruction SRA{.name = "SRA",.type = InstructionType::R,.hash=hash("sra"),.opcode = 0,.funct = 3};
+    constexpr instruction SUB{.name = "SUB",.type = InstructionType::R,.hash=hash("sub"),.opcode = 0,.funct = 34};
+    constexpr instruction SUBU{.name = "SUBU",.type = InstructionType::R,.hash=hash("subu"),.opcode = 0,.funct = 35};
+    constexpr instruction SW{.name = "SW",.type = InstructionType::I,.hash=hash("sw"),.opcode = 43};
   }
 }

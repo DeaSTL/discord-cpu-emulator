@@ -18,10 +18,25 @@ namespace Assembler{
     JUMP,
     UNKNOWN
   };
+
+
+  enum ErrorType {
+    SYNTAX,
+    MISSING_PARAMETER,
+    INVALID_PARAMETER
+  };
+
+
+  typedef struct error {
+
+
+  }error;
   
   typedef struct token{
     TokenType type;
     std::string value;
+    int line;
+    int column;
     void print(){
       std::cout << "Token: " << value << " Type: ";
       switch(type){
@@ -47,7 +62,7 @@ namespace Assembler{
           std::cout << "UNKNOWN";
           break;
       };
-      std::cout << std::endl;
+      std::cout << " Line: " << line << " Column: " << column << "\n";
     };
   } token;
   typedef struct label{
@@ -78,59 +93,14 @@ namespace Assembler{
     }
     return hash;
   }
-  enum InstructionHash : int {
-    ADD = hash("add"),
-    ADDI = hash("addi"),
-    ADDIU = hash("addiu"),
-    ADDU = hash("addu"),
-    AND = hash("and"),
-    ANDI = hash("andi"),
-    BEQ = hash("beq"),
-    BLEZ = hash("blez"),
-    BNE = hash("bne"),
-    BGTZ = hash("bgtz"),
-    DIV = hash("div"),
-    DIVU = hash("divu"),
-    J = hash("j"),
-    JAL = hash("jal"),
-    JALR = hash("jalr"),
-    JR = hash("jr"),
-    LB = hash("lb"),
-    LBU = hash("lbu"),
-    LHU = hash("lhu"),
-    LUI = hash("lui"),
-    LW = hash("lw"),
-    MFHI = hash("mfhi"),
-    MTHI = hash("mthi"),
-    MFLO = hash("mflo"),
-    MTLO = hash("mtlo"),
-    MULT = hash("mult"),
-    MULTU = hash("multu"),
-    NOR = hash("nor"),
-    XOR = hash("xor"),
-    OR = hash("or"),
-    ORI = hash("ori"),
-    SB = hash("sb"),
-    SH = hash("sh"),
-    SLT = hash("slt"),
-    SLTI = hash("slti"),
-    SLTIU = hash("sltiu"),
-    SLTU = hash("sltu"),
-    SLL = hash("sll"),
-    SRL = hash("srl"),
-    SRA = hash("sra"),
-    SUB = hash("sub"),
-    SUBU = hash("subu"),
-    SW = hash("sw"),
-    LWL = hash("lwl"),
-  };
 
   /*
    * Tokenizes the given mips32 assembly code to tokens
    */
   std::vector<token> tokenize(std::string);
-
-  
-
-
+  /*
+   * Checks the sequence of tokens for errors
+   * @return a vector of errors
+   */
+  std::vector<error> analyze(std::vector<token>);
 }
