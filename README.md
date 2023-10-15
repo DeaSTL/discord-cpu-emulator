@@ -10,6 +10,7 @@ Work in progress features
     - [x] Instruction Declaration
     - [ ] Execution Callbacks
     - [ ] Interrups
+    - [x] Syscall
 - [ ] THE KERNEL
     - [ ] Process Managment
         - [ ] Scheduler
