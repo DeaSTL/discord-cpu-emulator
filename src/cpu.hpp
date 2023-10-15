@@ -1,4 +1,5 @@
 #pragma once
+#include "assembler/assembler.hpp"
 #include "stdint.h"
 #include <string>
 #include <memory>
@@ -42,6 +43,15 @@ namespace Cpu{
     bool valid{false};
     void execute(std::shared_ptr<Cpu> cpu);
     void print();
+    static Assembler::token toToken(instruction instr, std::shared_ptr<Assembler::Tokenizer> tokenizer){
+      Assembler::token token;
+      token.type = Assembler::INSTRUCTION;
+      token.value = instr.name;
+      token.line = tokenizer->row;
+      token.column = tokenizer->col;
+      tokenizer->keyword_buffer = "";
+      return token;
+    }
   };
   std::shared_ptr<instruction> parseRawInstruction(uint32_t raw_instruction);
   class Cpu {
@@ -155,9 +165,6 @@ namespace Cpu{
     void xori(std::shared_ptr<Cpu> cpu);
     void j(std::shared_ptr<Cpu> cpu);
     void jal(std::shared_ptr<Cpu> cpu);
-
-
-
   }
   constexpr int hash(std::string str){
     int hash = 0;
@@ -183,48 +190,48 @@ namespace Cpu{
   }
 
   namespace instructions {
-    constexpr instruction ADD = {.name = "ADD",.type = InstructionType::R,.hash=hash("add"),.opcode = 0,.funct = 32};
-    constexpr instruction ADDI = {.name = "ADDI",.type = InstructionType::I,.hash=hash("addi"),.opcode = 8};
-    constexpr instruction ADDIU = {.name = "ADDIU",.type = InstructionType::I,.hash=hash("addiu"),.opcode = 9};
-    constexpr instruction ADDU = {.name = "ADDU",.type = InstructionType::R,.hash=hash("addu"),.opcode = 0,.funct = 33};
-    constexpr instruction AND = {.name = "AND",.type = InstructionType::R,.hash=hash("and"),.opcode = 0,.funct = 36};
-    constexpr instruction ANDI = {.name = "ANDI",.type = InstructionType::I,.hash=hash("andi"),.opcode = 12};
-    constexpr instruction BEQ{.name = "BEQ",.type = InstructionType::I,.hash=hash("beq"),.opcode = 4};
-    constexpr instruction BLEZ{.name = "BLEZ",.type = InstructionType::I,.hash=hash("blez"),.opcode = 6};
-    constexpr instruction BNE{.name = "BNE",.type = InstructionType::I,.hash=hash("bne"),.opcode = 5};
-    constexpr instruction BGTZ{.name = "BGTZ",.type = InstructionType::I,.hash=hash("bgtz"),.opcode = 7};
-    constexpr instruction DIV{.name = "DIV",.type = InstructionType::R,.hash=hash("div"),.opcode = 0,.funct = 26};
-    constexpr instruction DIVU{.name = "DIVU",.type = InstructionType::R,.hash=hash("divu"),.opcode = 0,.funct = 27};
-    constexpr instruction J_{.name = "J",.type = InstructionType::J,.hash=hash("j"),.opcode = 2};
-    constexpr instruction JAL{.name = "JAL",.type = InstructionType::J,.hash=hash("jal"),.opcode = 3};
-    constexpr instruction JALR{.name = "JALR",.type = InstructionType::R,.hash=hash("jalr"),.opcode = 0,.funct = 9};
-    constexpr instruction JR{.name = "JR",.type = InstructionType::R,.hash=hash("jr"),.opcode = 0,.funct = 8};
-    constexpr instruction LB{.name = "LB",.type = InstructionType::I,.hash=hash("lb"),.opcode = 32};
-    constexpr instruction LBU{.name = "LBU",.type = InstructionType::I,.hash=hash("lbu"),.opcode = 36};
-    constexpr instruction LHU{.name = "LHU",.type = InstructionType::I,.hash=hash("lhu"),.opcode = 37};
-    constexpr instruction LUI{.name = "LUI",.type = InstructionType::I,.hash=hash("lui"),.opcode = 15};
-    constexpr instruction LW{.name = "LW",.type = InstructionType::I,.hash=hash("lw"),.opcode = 35};
-    constexpr instruction MFHI{.name = "MFHI",.type = InstructionType::R,.hash=hash("mfhi"),.opcode = 0,.funct = 16};
-    constexpr instruction MTHI{.name = "MTHI",.type = InstructionType::R,.hash=hash("mthi"),.opcode = 0,.funct = 17};
-    constexpr instruction MFLO{.name = "MFLO",.type = InstructionType::R,.hash=hash("mflo"),.opcode = 0,.funct = 18};
-    constexpr instruction MTLO{.name = "MTLO",.type = InstructionType::R,.hash=hash("mtlo"),.opcode = 0,.funct = 19};
-    constexpr instruction MULT{.name = "MULT",.type = InstructionType::R,.hash=hash("mult"),.opcode = 0,.funct = 24};
-    constexpr instruction MULTU{.name = "MULTU",.type = InstructionType::R,.hash=hash("multu"),.opcode = 0,.funct = 25};
-    constexpr instruction NOR{.name = "NOR",.type = InstructionType::R,.hash=hash("nor"),.opcode = 0,.funct = 39};
-    constexpr instruction XOR{.name = "XOR",.type = InstructionType::R,.hash=hash("xor"),.opcode = 0,.funct = 38};
-    constexpr instruction OR{.name = "OR",.type = InstructionType::R,.hash=hash("or"),.opcode = 0,.funct = 37};
-    constexpr instruction ORI{.name = "ORI",.type = InstructionType::I,.hash=hash("ori"),.opcode = 13};
-    constexpr instruction SB{.name = "SB",.type = InstructionType::I,.hash=hash("sb"),.opcode = 40};
-    constexpr instruction SH{.name = "SH",.type = InstructionType::I,.hash=hash("sh"),.opcode = 41};
-    constexpr instruction SLT{.name = "SLT",.type = InstructionType::R,.hash=hash("slt"),.opcode = 0,.funct = 42};
-    constexpr instruction SLTI{.name = "SLTI",.type = InstructionType::I,.hash=hash("slti"),.opcode = 10};
-    constexpr instruction SLTIU{.name = "SLTIU",.type = InstructionType::I,.hash=hash("sltiu"),.opcode = 11};
-    constexpr instruction SLTU{.name = "SLTU",.type = InstructionType::R,.hash=hash("sltu"),.opcode = 0,.funct = 43};
-    constexpr instruction SLL{.name = "SLL",.type = InstructionType::R,.hash=hash("sll"),.opcode = 0,.funct = 0};
-    constexpr instruction SRL{.name = "SRL",.type = InstructionType::R,.hash=hash("srl"),.opcode = 0,.funct = 2};
-    constexpr instruction SRA{.name = "SRA",.type = InstructionType::R,.hash=hash("sra"),.opcode = 0,.funct = 3};
-    constexpr instruction SUB{.name = "SUB",.type = InstructionType::R,.hash=hash("sub"),.opcode = 0,.funct = 34};
-    constexpr instruction SUBU{.name = "SUBU",.type = InstructionType::R,.hash=hash("subu"),.opcode = 0,.funct = 35};
-    constexpr instruction SW{.name = "SW",.type = InstructionType::I,.hash=hash("sw"),.opcode = 43};
+    constexpr instruction ADD = {.name = "add",.type = InstructionType::R,.hash=hash("add"),.opcode = 0,.funct = 32};
+    constexpr instruction ADDI = {.name = "addi",.type = InstructionType::I,.hash=hash("addi"),.opcode = 8};
+    constexpr instruction ADDIU = {.name = "addiu",.type = InstructionType::I,.hash=hash("addiu"),.opcode = 9};
+    constexpr instruction ADDU = {.name = "addu",.type = InstructionType::R,.hash=hash("addu"),.opcode = 0,.funct = 33};
+    constexpr instruction AND = {.name = "and",.type = InstructionType::R,.hash=hash("and"),.opcode = 0,.funct = 36};
+    constexpr instruction ANDI = {.name = "andi",.type = InstructionType::I,.hash=hash("andi"),.opcode = 12};
+    constexpr instruction BEQ{.name = "beq",.type = InstructionType::I,.hash=hash("beq"),.opcode = 4};
+    constexpr instruction BLEZ{.name = "blez",.type = InstructionType::I,.hash=hash("blez"),.opcode = 6};
+    constexpr instruction BNE{.name = "bne",.type = InstructionType::I,.hash=hash("bne"),.opcode = 5};
+    constexpr instruction BGTZ{.name = "bgtz",.type = InstructionType::I,.hash=hash("bgtz"),.opcode = 7};
+    constexpr instruction DIV{.name = "div",.type = InstructionType::R,.hash=hash("div"),.opcode = 0,.funct = 26};
+    constexpr instruction DIVU{.name = "divu",.type = InstructionType::R,.hash=hash("divu"),.opcode = 0,.funct = 27};
+    constexpr instruction J_{.name = "j",.type = InstructionType::J,.hash=hash("j"),.opcode = 2};
+    constexpr instruction JAL{.name = "jal",.type = InstructionType::J,.hash=hash("jal"),.opcode = 3};
+    constexpr instruction JALR{.name = "jalr",.type = InstructionType::R,.hash=hash("jalr"),.opcode = 0,.funct = 9};
+    constexpr instruction JR{.name = "jr",.type = InstructionType::R,.hash=hash("jr"),.opcode = 0,.funct = 8};
+    constexpr instruction LB{.name = "lb",.type = InstructionType::I,.hash=hash("lb"),.opcode = 32};
+    constexpr instruction LBU{.name = "lbu",.type = InstructionType::I,.hash=hash("lbu"),.opcode = 36};
+    constexpr instruction LHU{.name = "lhu",.type = InstructionType::I,.hash=hash("lhu"),.opcode = 37};
+    constexpr instruction LUI{.name = "lui",.type = InstructionType::I,.hash=hash("lui"),.opcode = 15};
+    constexpr instruction LW{.name = "lw",.type = InstructionType::I,.hash=hash("lw"),.opcode = 35};
+    constexpr instruction MFHI{.name = "mfhi",.type = InstructionType::R,.hash=hash("mfhi"),.opcode = 0,.funct = 16};
+    constexpr instruction MTHI{.name = "mthi",.type = InstructionType::R,.hash=hash("mthi"),.opcode = 0,.funct = 17};
+    constexpr instruction MFLO{.name = "mflo",.type = InstructionType::R,.hash=hash("mflo"),.opcode = 0,.funct = 18};
+    constexpr instruction MTLO{.name = "mtlo",.type = InstructionType::R,.hash=hash("mtlo"),.opcode = 0,.funct = 19};
+    constexpr instruction MULT{.name = "mult",.type = InstructionType::R,.hash=hash("mult"),.opcode = 0,.funct = 24};
+    constexpr instruction MULTU{.name = "multu",.type = InstructionType::R,.hash=hash("multu"),.opcode = 0,.funct = 25};
+    constexpr instruction NOR{.name = "nor",.type = InstructionType::R,.hash=hash("nor"),.opcode = 0,.funct = 39};
+    constexpr instruction XOR{.name = "xor",.type = InstructionType::R,.hash=hash("xor"),.opcode = 0,.funct = 38};
+    constexpr instruction OR{.name = "or",.type = InstructionType::R,.hash=hash("or"),.opcode = 0,.funct = 37};
+    constexpr instruction ORI{.name = "ori",.type = InstructionType::I,.hash=hash("ori"),.opcode = 13};
+    constexpr instruction SB{.name = "sb",.type = InstructionType::I,.hash=hash("sb"),.opcode = 40};
+    constexpr instruction SH{.name = "sh",.type = InstructionType::I,.hash=hash("sh"),.opcode = 41};
+    constexpr instruction SLT{.name = "slt",.type = InstructionType::R,.hash=hash("slt"),.opcode = 0,.funct = 42};
+    constexpr instruction SLTI{.name = "slti",.type = InstructionType::I,.hash=hash("slti"),.opcode = 10};
+    constexpr instruction SLTIU{.name = "sltiu",.type = InstructionType::I,.hash=hash("sltiu"),.opcode = 11};
+    constexpr instruction SLTU{.name = "sltu",.type = InstructionType::R,.hash=hash("sltu"),.opcode = 0,.funct = 43};
+    constexpr instruction SLL{.name = "sll",.type = InstructionType::R,.hash=hash("sll"),.opcode = 0,.funct = 0};
+    constexpr instruction SRL{.name = "srl",.type = InstructionType::R,.hash=hash("srl"),.opcode = 0,.funct = 2};
+    constexpr instruction SRA{.name = "sra",.type = InstructionType::R,.hash=hash("sra"),.opcode = 0,.funct = 3};
+    constexpr instruction SUB{.name = "sub",.type = InstructionType::R,.hash=hash("sub"),.opcode = 0,.funct = 34};
+    constexpr instruction SUBU{.name = "subu",.type = InstructionType::R,.hash=hash("subu"),.opcode = 0,.funct = 35};
+    constexpr instruction SW{.name = "sw",.type = InstructionType::I,.hash=hash("sw"),.opcode = 43};
   }
 }

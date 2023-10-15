@@ -98,6 +98,19 @@ namespace Assembler{
    * Tokenizes the given mips32 assembly code to tokens
    */
   std::vector<token> tokenize(std::string);
+  typedef struct Tokenizer {
+    std::vector<token> tokens;
+    std::vector<error> errors;
+    //stripped assembly code
+    std::string asm_code;
+    std::vector<std::string> lines;
+    std::string keyword_buffer;
+    int col;
+    int row;
+    char next_char;
+    char prev_char;
+    char curr_char;
+  } Tokenizer;
   /*
    * Checks the sequence of tokens for errors
    * @return a vector of errors

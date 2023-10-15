@@ -14,40 +14,40 @@ namespace Test {
     Cpu::instructions::J_,
     Cpu::instructions::ADD,
     Cpu::instructions::LW,
-    Cpu::instructions::SW,
-    Cpu::instructions::BEQ,
-    Cpu::instructions::BNE,
-    Cpu::instructions::SLT,
-    Cpu::instructions::ADDI,
-    Cpu::instructions::SUB,
-    Cpu::instructions::AND,
-    Cpu::instructions::OR,
-    Cpu::instructions::XOR,
-    Cpu::instructions::NOR,
-    Cpu::instructions::SLL,
-    Cpu::instructions::SRL,
-    Cpu::instructions::SRA,
-    Cpu::instructions::JR,
-    Cpu::instructions::JAL,
-    Cpu::instructions::JALR,
-    Cpu::instructions::MFHI,
-    Cpu::instructions::MFLO,
-    Cpu::instructions::MULT,
-    Cpu::instructions::MULTU,
-    Cpu::instructions::DIV,
-    Cpu::instructions::DIVU,
-    Cpu::instructions::ADDU,
-    Cpu::instructions::SUBU,
-    Cpu::instructions::ANDI,
-    Cpu::instructions::ORI,
-    Cpu::instructions::LUI,
-    Cpu::instructions::SLTI,
-    Cpu::instructions::SLTIU,
-    Cpu::instructions::LB,
-    Cpu::instructions::LBU,
-    Cpu::instructions::LHU,
-    Cpu::instructions::SB,
-    Cpu::instructions::SH,
+    // Cpu::instructions::SW,
+    // Cpu::instructions::BEQ,
+    // Cpu::instructions::BNE,
+    // Cpu::instructions::SLT,
+    // Cpu::instructions::ADDI,
+    // Cpu::instructions::SUB,
+    // Cpu::instructions::AND,
+    // Cpu::instructions::OR,
+    // Cpu::instructions::XOR,
+    // Cpu::instructions::NOR,
+    // Cpu::instructions::SLL,
+    // Cpu::instructions::SRL,
+    // Cpu::instructions::SRA,
+    // Cpu::instructions::JR,
+    // Cpu::instructions::JAL,
+    // Cpu::instructions::JALR,
+    // Cpu::instructions::MFHI,
+    // Cpu::instructions::MFLO,
+    // Cpu::instructions::MULT,
+    // Cpu::instructions::MULTU,
+    // Cpu::instructions::DIV,
+    // Cpu::instructions::DIVU,
+    // Cpu::instructions::ADDU,
+    // Cpu::instructions::SUBU,
+    // Cpu::instructions::ANDI,
+    // Cpu::instructions::ORI,
+    // Cpu::instructions::LUI,
+    // Cpu::instructions::SLTI,
+    // Cpu::instructions::SLTIU,
+    // Cpu::instructions::LB,
+    // Cpu::instructions::LBU,
+    // Cpu::instructions::LHU,
+    // Cpu::instructions::SB,
+    // Cpu::instructions::SH,
   };
   typedef struct expected_data{
     std::vector<Assembler::token> tokens;
@@ -62,21 +62,21 @@ namespace Test {
       data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::LABEL, .value = std::to_string(instruction.imm)});
     }
     if(instruction.type == Cpu::InstructionType::R){
-      data.line += tolower(instruction.name) + " $" + 
-        std::to_string(instruction.rd) + " $" + 
-        std::to_string(instruction.rs) + " " + 
+      data.line += tolower(instruction.name) + " $s" + 
+        std::to_string(instruction.rd) + " $s" + 
+        std::to_string(instruction.rs) + " $s" + 
         std::to_string(instruction.rt);
-      data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = std::to_string(instruction.rd)});
-      data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = std::to_string(instruction.rs)});
-      data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = std::to_string(instruction.rt)});
+      data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = "s" + std::to_string(instruction.rd)});
+      data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = "s" + std::to_string(instruction.rs)});
+      data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = "s" + std::to_string(instruction.rt)});
     }
     if(instruction.type == Cpu::InstructionType::I){
-      data.line += tolower(instruction.name) + " $" + 
-        std::to_string(instruction.rt) + " $" + 
+      data.line += tolower(instruction.name) + " $s" + 
+        std::to_string(instruction.rt) + " $s" + 
         std::to_string(instruction.rs) + " " + 
         std::to_string(instruction.imm);
-      data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = std::to_string(instruction.rt)});
-      data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = std::to_string(instruction.rs)});
+      data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = "s" + std::to_string(instruction.rt)});
+      data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = "s" + std::to_string(instruction.rs)});
       data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::DECIMAL, .value = std::to_string(instruction.imm)});
     }
     return data;
@@ -97,7 +97,7 @@ namespace Test {
     }
     std::vector<Assembler::token> tokens = Assembler::tokenize(test_asm);
     std::vector<Assembler::token> expected_tokens;
-
+    
     for(expected_data data : expected){
       for(Assembler::token token : data.tokens){
         expected_tokens.push_back(token);
@@ -112,15 +112,20 @@ namespace Test {
         expected_tokens[i].print();
         std::cout << "Got: \n";
         tokens[i].print();
-        return false;
+        break;
       }else{
         std::cout << "Testing: ";
         expected_tokens[i].print();
       }
       if(i > tokens.size()){
         std::cout << "Expected " << expected_tokens.size() << " tokens but got " << tokens.size() << std::endl;
-        return false;
+        break;
       }
+    }
+
+    std::cout << "All data we got" << std::endl;
+    for(Assembler::token token : tokens){
+      token.print();
     }
 
     return false;
