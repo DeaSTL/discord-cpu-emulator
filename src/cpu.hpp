@@ -43,14 +43,15 @@ namespace Cpu{
     bool valid{false};
     void execute(std::shared_ptr<Cpu> cpu);
     void print();
-    static Assembler::token toToken(instruction instr, std::shared_ptr<Assembler::Tokenizer> tokenizer){
+    static void toToken(instruction instr, std::shared_ptr<Assembler::Tokenizer> tokenizer){
       Assembler::token token;
       token.type = Assembler::INSTRUCTION;
       token.value = instr.name;
       token.line = tokenizer->row;
       token.column = tokenizer->col;
+      token.print();
       tokenizer->keyword_buffer = "";
-      return token;
+      tokenizer->tokens.push_back(token);
     }
   };
   std::shared_ptr<instruction> parseRawInstruction(uint32_t raw_instruction);
@@ -181,10 +182,11 @@ namespace Cpu{
     };
     for(size_t i = 0; i < str.length(); i++){
       hash += str[i];
-      hash &= (hash << 15);
+      hash ^= (hash << 15);
       hash ^= (hash >> 30);
       hash += str[i];
       hash ^= (constants[i % 9]);
+      hash %= 0x100000000;
     }
     return hash;
   }
@@ -219,6 +221,7 @@ namespace Cpu{
     constexpr instruction MULTU{.name = "multu",.type = InstructionType::R,.hash=hash("multu"),.opcode = 0,.funct = 25};
     constexpr instruction NOR{.name = "nor",.type = InstructionType::R,.hash=hash("nor"),.opcode = 0,.funct = 39};
     constexpr instruction XOR{.name = "xor",.type = InstructionType::R,.hash=hash("xor"),.opcode = 0,.funct = 38};
+    constexpr instruction XORI{.name = "xori",.type = InstructionType::I,.hash=hash("xori"),.opcode = 14};
     constexpr instruction OR{.name = "or",.type = InstructionType::R,.hash=hash("or"),.opcode = 0,.funct = 37};
     constexpr instruction ORI{.name = "ori",.type = InstructionType::I,.hash=hash("ori"),.opcode = 13};
     constexpr instruction SB{.name = "sb",.type = InstructionType::I,.hash=hash("sb"),.opcode = 40};
@@ -233,5 +236,55 @@ namespace Cpu{
     constexpr instruction SUB{.name = "sub",.type = InstructionType::R,.hash=hash("sub"),.opcode = 0,.funct = 34};
     constexpr instruction SUBU{.name = "subu",.type = InstructionType::R,.hash=hash("subu"),.opcode = 0,.funct = 35};
     constexpr instruction SW{.name = "sw",.type = InstructionType::I,.hash=hash("sw"),.opcode = 43};
+    constexpr instruction SYSCALL{.name = "syscall",.type = InstructionType::R,.hash=hash("syscall"),.opcode = 0,.funct = 12};
+    constexpr instruction BREAK{.name = "break",.type = InstructionType::R,.hash=hash("break"),.opcode = 0,.funct = 13};
+    const std::vector<instruction> all = {
+      ADD,
+      ADDI,
+      ADDIU,
+      ADDU,
+      AND,
+      ANDI,
+      BEQ,
+      BGTZ,
+      BLEZ,
+      BNE,
+      DIV,
+      DIVU,
+      J_,
+      JAL,
+      JALR,
+      JR,
+      LB,
+      LBU,
+      LHU,
+      LUI,
+      LW,
+      MFHI,
+      MTHI,
+      MFLO,
+      MTLO,
+      MULT,
+      MULTU,
+      NOR,
+      XOR,
+      XORI,
+      OR,
+      ORI,
+      SB,
+      SH,
+      SLT,
+      SLTI,
+      SLTIU,
+      SLTU,
+      SLL,
+      SRL,
+      SRA,
+      SUB,
+      SUBU,
+      SW,
+      SYSCALL,
+      BREAK
+    };
   }
 }

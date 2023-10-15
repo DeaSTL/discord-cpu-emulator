@@ -14,40 +14,40 @@ namespace Test {
     Cpu::instructions::J_,
     Cpu::instructions::ADD,
     Cpu::instructions::LW,
-    // Cpu::instructions::SW,
-    // Cpu::instructions::BEQ,
-    // Cpu::instructions::BNE,
-    // Cpu::instructions::SLT,
-    // Cpu::instructions::ADDI,
-    // Cpu::instructions::SUB,
-    // Cpu::instructions::AND,
-    // Cpu::instructions::OR,
-    // Cpu::instructions::XOR,
-    // Cpu::instructions::NOR,
-    // Cpu::instructions::SLL,
-    // Cpu::instructions::SRL,
-    // Cpu::instructions::SRA,
-    // Cpu::instructions::JR,
-    // Cpu::instructions::JAL,
-    // Cpu::instructions::JALR,
-    // Cpu::instructions::MFHI,
-    // Cpu::instructions::MFLO,
-    // Cpu::instructions::MULT,
-    // Cpu::instructions::MULTU,
-    // Cpu::instructions::DIV,
-    // Cpu::instructions::DIVU,
-    // Cpu::instructions::ADDU,
-    // Cpu::instructions::SUBU,
-    // Cpu::instructions::ANDI,
-    // Cpu::instructions::ORI,
-    // Cpu::instructions::LUI,
-    // Cpu::instructions::SLTI,
-    // Cpu::instructions::SLTIU,
-    // Cpu::instructions::LB,
-    // Cpu::instructions::LBU,
-    // Cpu::instructions::LHU,
-    // Cpu::instructions::SB,
-    // Cpu::instructions::SH,
+    Cpu::instructions::SW,
+    Cpu::instructions::BEQ,
+    Cpu::instructions::BNE,
+    Cpu::instructions::SLT,
+    Cpu::instructions::ADDI,
+    Cpu::instructions::SUB,
+    Cpu::instructions::AND,
+    Cpu::instructions::OR,
+    Cpu::instructions::XOR,
+    Cpu::instructions::NOR,
+    Cpu::instructions::SLL,
+    Cpu::instructions::SRL,
+    Cpu::instructions::SRA,
+    Cpu::instructions::JR,
+    Cpu::instructions::JAL,
+    Cpu::instructions::JALR,
+    Cpu::instructions::MFHI,
+    Cpu::instructions::MFLO,
+    Cpu::instructions::MULT,
+    Cpu::instructions::MULTU,
+    Cpu::instructions::DIV,
+    Cpu::instructions::DIVU,
+    Cpu::instructions::ADDU,
+    Cpu::instructions::SUBU,
+    Cpu::instructions::ANDI,
+    Cpu::instructions::ORI,
+    Cpu::instructions::LUI,
+    Cpu::instructions::SLTI,
+    Cpu::instructions::SLTIU,
+    Cpu::instructions::LB,
+    Cpu::instructions::LBU,
+    Cpu::instructions::LHU,
+    Cpu::instructions::SB,
+    Cpu::instructions::SH,
   };
   typedef struct expected_data{
     std::vector<Assembler::token> tokens;
@@ -103,9 +103,6 @@ namespace Test {
         expected_tokens.push_back(token);
       }
     }
-    if(tokens.size() != expected_tokens.size()){
-      std::cout << "Expected " << expected_tokens.size() << " tokens but got " << tokens.size() << std::endl;
-    }
     for(size_t i = 0; i < expected_tokens.size(); i++ ){
       if(expected_tokens[i].type != tokens[i].type || expected_tokens[i].value != tokens[i].value){
         std::cout << "Expected: ";
@@ -123,9 +120,9 @@ namespace Test {
       }
     }
 
-    std::cout << "All data we got" << std::endl;
-    for(Assembler::token token : tokens){
-      token.print();
+    if(tokens.size() != expected_tokens.size()){
+      std::cout << "Expected " << expected_tokens.size() << " tokens but got " << tokens.size() << std::endl;
+      return false;
     }
 
     return false;
