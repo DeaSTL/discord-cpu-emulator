@@ -27,11 +27,13 @@ Work in progress features
 
 Work in progress assembly format
 ```asm
-lw $s0, $s0, 0x420
+lw $s0 $s0 0x420
 test:
   #this is a comment
-  addi $s0, $s0, 0x69
-  addi $s0, $s0, 0x420
+  addi $s0 $s0 0x69 
+  #Hex Numbers
+  addi $s0 $s0 420 
+  #Decimal Numbers
 j->test
 ```
 
