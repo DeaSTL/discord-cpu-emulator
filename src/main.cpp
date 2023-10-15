@@ -24,7 +24,6 @@ int main(){
   cpu->memory[4] = 0xdeadbeef;
 
 
-  Assembler::tokenize(Assembler::test_asm);
 
 
 

@@ -1,6 +1,29 @@
 # A mips 32 emulator that is interfaced with a discord bot
 
 
+Work in progress features
+- [ ] Assembler
+    - [x] Tokenizer
+    - [ ] Syntax Analyzer
+    - [ ] Discord Assembly Input
+- [ ] Interprater
+    - [x] Instruction Declaration
+    - [ ] Execution Callbacks
+    - [ ] Interrups
+- [ ] THE KERNEL
+    - [ ] Process Managment
+        - [ ] Scheduler
+        - [ ] Virtual Stack
+        - [ ] Virtual Registers
+    - [ ] Memory Management
+        - [ ] Malloc like calls
+        - [ ] Memory Mapped Peripherals
+            - [ ] Permenant Network Socket
+            - [ ] Standard Out
+            - [ ] Standard In
+
+
+
 Work in progress assembly format
 ```asm
 lw $s0, $s0, 0x420
