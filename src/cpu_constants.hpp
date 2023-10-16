@@ -60,13 +60,17 @@ namespace MipsEmulator {
     const uint32_t R_FUNCTION_NOR = 0x27;
     const uint32_t R_FUNCTION_OR = 0x25;
     const uint32_t R_FUNCTION_SLL = 0x00;
+    const uint32_t R_FUNCTION_SLLV = 0x04;
+    const uint32_t R_FUNCTION_SRLV = 0x06;
     const uint32_t R_FUNCTION_SLT = 0x2A;
     const uint32_t R_FUNCTION_SLTU = 0x2B;
     const uint32_t R_FUNCTION_SRA = 0x03;
+    const uint32_t R_FUNCTION_SRAV = 0x07;
     const uint32_t R_FUNCTION_SRL = 0x02;
     const uint32_t R_FUNCTION_SUB = 0x22;
     const uint32_t R_FUNCTION_SUBU = 0x23;
     const uint32_t R_FUNCTION_XOR = 0x26;
+    const uint32_t R_FUNCTION_SYSCALL = 0x0C;
 
     const uint32_t J_FUNCTION_J = 0x02;
     const uint32_t J_FUNCTION_JAL = 0x03;
@@ -92,6 +96,7 @@ namespace MipsEmulator {
     const uint32_t I_FUNCTION_SLTI = 0x0A;
     const uint32_t I_FUNCTION_SLTIU = 0x0B;
     const uint32_t I_FUNCTION_SW = 0x2B;
+    const uint32_t I_FUNCTION_XORI = 0x0E;
 
     const uint32_t INS_ADD = 0x1;
     const uint32_t INS_ADDU = 0x2;
@@ -109,6 +114,7 @@ namespace MipsEmulator {
     const uint32_t INS_NOR = 0xE;
     const uint32_t INS_OR = 0xF;
     const uint32_t INS_SLL = 0x10;
+    const uint32_t INS_SLLV = 0x11;
     const uint32_t INS_SLT = 0x11;
     const uint32_t INS_SLTU = 0x12;
     const uint32_t INS_SRA = 0x13;
@@ -139,6 +145,12 @@ namespace MipsEmulator {
     const uint32_t INS_SLTI = 0x2C;
     const uint32_t INS_SLTIU = 0x2D;
     const uint32_t INS_SW = 0x2E;
+    const uint32_t INS_XORI = 0x2F;
+    const uint32_t INS_SYSCALL = 0x30;
+    const uint32_t INS_BREAK = 0x31;
+    const uint32_t INS_SRAV = 0x32;
+    const uint32_t INS_SRLV = 0x33;
+
   }
 
 }

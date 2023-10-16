@@ -25,9 +25,13 @@ int main(int argc, char* argv[]){
   cpu->memory[3] = 0x42069;
   cpu->memory[4] = 0xdeadbeef;
 
-  int result = Catch::Session().run(argc, argv);
 
-  cout << "Result: " << result << endl;
+  if(argc > 1 && argv[1] == string("test")){
+    
+    int result = Catch::Session().run();
+    cout << "Result: " << result << endl;
+  }
+
 
 
 

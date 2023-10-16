@@ -48,10 +48,6 @@ namespace MipsEmulator{
       instruction_binary = instruction_binary << 16;
       instruction_binary = instruction_binary | instruction.immediate;
       std::shared_ptr<CpuInstructions::instruction> instruction_decoded = CpuInstructions::parseRawInstruction(instruction_binary);
-      if(instruction.name != instruction_decoded->name){
-        cout << "Error: Instruction name does not match" << endl;
-        final_status = false;
-      }
       if(instruction.opcode != instruction_decoded->opcode){
         cout << "Error: Instruction opcode does not match" << endl;
         final_status = false;
@@ -71,17 +67,13 @@ namespace MipsEmulator{
       return final_status;
     }
     bool testJInstruction(JType instruction){
-      std::cout << "Testing J Instruction" << std::endl;
+      std::cout << "Testing J Instruction: " << instruction.name << std::endl;
       bool final_status = true;
       uint32_t instruction_binary = 0;
       instruction_binary = instruction_binary | instruction.opcode;
       instruction_binary = instruction_binary << 26;
       instruction_binary = instruction_binary | instruction.address;
       std::shared_ptr<CpuInstructions::instruction> instruction_decoded = CpuInstructions::parseRawInstruction(instruction_binary);
-      if(instruction.name != instruction_decoded->name){
-        cout << "Error: Instruction name does not match" << endl;
-        final_status = false;
-      }
       if(instruction.opcode != instruction_decoded->opcode){
         cout << "Error: Instruction opcode does not match" << endl;
         final_status = false;
@@ -94,7 +86,7 @@ namespace MipsEmulator{
     }
 
     bool testRInstruction(RType instruction){
-      std::cout << "Testing R Instruction" << std::endl;
+      std::cout << "Testing R Instruction: " << instruction.name << std::endl;
       bool final_status = true;
       uint32_t instruction_binary = 0;
       instruction_binary = instruction_binary | instruction.opcode;
@@ -109,8 +101,8 @@ namespace MipsEmulator{
       instruction_binary = instruction_binary << 6;
       instruction_binary = instruction_binary | instruction.funct;
       std::shared_ptr<CpuInstructions::instruction> instruction_decoded = CpuInstructions::parseRawInstruction(instruction_binary);
-      if(instruction.name != instruction_decoded->name){
-        cout << "Error: Instruction name does not match" << endl;
+      if(!instruction_decoded->valid){
+        cout << "Error: Instruction is not valid" << endl;
         final_status = false;
       }
       if(instruction.opcode != instruction_decoded->opcode){

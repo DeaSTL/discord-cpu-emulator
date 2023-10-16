@@ -89,6 +89,10 @@ namespace MipsEmulator{
           current_instruction->id =  CpuConstants::INS_SLL;
           return current_instruction;
           break;
+        case CpuConstants::R_FUNCTION_SLLV:
+          current_instruction->id =  CpuConstants::INS_SLLV;
+          return current_instruction;
+          break;
         case  CpuConstants::R_FUNCTION_SLT:
           current_instruction->id =  CpuConstants::INS_SLT;
           return current_instruction;
@@ -101,6 +105,14 @@ namespace MipsEmulator{
           current_instruction->id =  CpuConstants::INS_SRA;
           return current_instruction;
           break;
+        case CpuConstants::R_FUNCTION_SRLV:
+          current_instruction->id =  CpuConstants::INS_SRLV;
+          return current_instruction;
+          break;
+        case CpuConstants::R_FUNCTION_SRAV:
+          current_instruction->id =  CpuConstants::INS_SRAV;
+          return current_instruction;
+          break;
         case  CpuConstants::R_FUNCTION_SRL:
           current_instruction->id =  CpuConstants::INS_SRL;
           return current_instruction;
@@ -109,8 +121,16 @@ namespace MipsEmulator{
           current_instruction->id =  CpuConstants::INS_SUB;
           return current_instruction;
           break;
+        case CpuConstants::R_FUNCTION_XOR:
+          current_instruction->id =  CpuConstants::INS_XOR;
+          return current_instruction;
+          break;
         case  CpuConstants::R_FUNCTION_SUBU:
           current_instruction->id =  CpuConstants::INS_SUBU;
+          return current_instruction;
+          break;
+        case CpuConstants::R_FUNCTION_SYSCALL:
+          current_instruction->id =  CpuConstants::INS_SYSCALL;
           return current_instruction;
           break;
       }
@@ -204,6 +224,10 @@ namespace MipsEmulator{
           current_instruction->id = CpuConstants::INS_LUI;
           return current_instruction;
           break;
+        case CpuConstants::I_FUNCTION_LH:
+          current_instruction->id = CpuConstants::INS_LH;
+          return current_instruction;
+          break;
         case CpuConstants::I_FUNCTION_LW:
           current_instruction->id = CpuConstants::INS_LW;
           return current_instruction;
@@ -230,6 +254,10 @@ namespace MipsEmulator{
           break;
         case CpuConstants::I_FUNCTION_SW:
           current_instruction->id = CpuConstants::INS_SW;
+          return current_instruction;
+          break;
+        case CpuConstants::I_FUNCTION_XORI:
+          current_instruction->id = CpuConstants::INS_XORI;
           return current_instruction;
           break;
       }
@@ -302,6 +330,9 @@ namespace MipsEmulator{
         case 0x20:
           return parseIInstruction(raw_instruction);
           break;
+        case 0x21:
+          return parseIInstruction(raw_instruction);
+          break;
         case 0x23:
           return parseIInstruction(raw_instruction);
           break;
@@ -318,6 +349,9 @@ namespace MipsEmulator{
           return parseIInstruction(raw_instruction);
           break;
         case 0x2B:
+          return parseIInstruction(raw_instruction);
+          break;
+        case 0x0E:
           return parseIInstruction(raw_instruction);
           break;
       }
