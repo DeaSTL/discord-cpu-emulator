@@ -1,0 +1,5 @@
+if(EXISTS "/home/deastl/repos/discord-cpu-bot/DiscordMipsEmulator-b12d07c_tests.cmake")
+  include("/home/deastl/repos/discord-cpu-bot/DiscordMipsEmulator-b12d07c_tests.cmake")
+else()
+  add_test(DiscordMipsEmulator_NOT_BUILT-b12d07c DiscordMipsEmulator_NOT_BUILT-b12d07c)
+endif()

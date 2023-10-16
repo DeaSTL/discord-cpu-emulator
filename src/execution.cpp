@@ -2,8 +2,8 @@
 #include "cpu.hpp"
 
 
-namespace Cpu {
-  namespace execution {
+namespace MipsEmulator {
+  namespace CpuExecution {
     /*
      * Adds the contents of two registers and stores the result in the destination register.
      * @rd The destination register.

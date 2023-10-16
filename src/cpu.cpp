@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 
-namespace Cpu {
+namespace MipsEmulator {
 
   Cpu::Cpu(){
 

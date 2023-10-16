@@ -1,6 +1,0 @@
-
-
-
-namespace Test{
-  bool testInstructions();
-}

@@ -3,11 +3,13 @@
 #include <dpp/dpp.h>
 #include "secrets.hpp"
 #include "cpu.hpp"
+#include "cpu_constants.hpp"
 #include <format>
 #include "assembler/assembler.hpp"
+#include "catch2/catch_session.hpp"
 
-
-int main(){
+using namespace MipsEmulator;
+int main(int argc, char* argv[]){
   using std::string;
   using std::cout;
   using std::endl;
@@ -15,13 +17,17 @@ int main(){
 
   dpp::cluster bot(DISCORD_APPLICATION_TOKEN);
 
-  std::unique_ptr<Cpu::Cpu> cpu(new Cpu::Cpu());
+  std::unique_ptr<Cpu> cpu(new Cpu());
 
   cpu->memory[0] = 0x69;
   cpu->memory[1] = 0x420;
   cpu->memory[2] = 0x69420;
   cpu->memory[3] = 0x42069;
   cpu->memory[4] = 0xdeadbeef;
+
+  int result = Catch::Session().run(argc, argv);
+
+  cout << "Result: " << result << endl;
 
 
 
@@ -38,7 +44,7 @@ int main(){
         }
         mem_str->append("```");
         for(uint64_t i = (8 * offset); i < 256 + (8 * offset); i++){
-          if(i > Cpu::MEMORY_MAX){
+          if(i > CpuConstants::MEMORY_MAX){
             mem_str->append("Ain't got that much memory chief\n");
             break;
           }
@@ -53,28 +59,28 @@ int main(){
       }else if(event.command.get_command_name() == "dump_reg"){
         string* reg_str = new string();
         reg_str->append("```");
-        reg_str->append(std::format("ZERO: {:#04x}\n",cpu->registers_gp[Cpu::REGISTER_ZERO]));
-        reg_str->append(std::format("AT: {:#04x}\n",cpu->registers_gp[Cpu::REGISTER_AT]));
-        reg_str->append(std::format("V0: {:#04x}\n",cpu->registers_gp[Cpu::REGISTER_V0]));
-        reg_str->append(std::format("V1: {:#04x}\n",cpu->registers_gp[Cpu::REGISTER_V1]));
+        reg_str->append(std::format("ZERO: {:#04x}\n",cpu->registers_gp[CpuConstants::REGISTER_ZERO]));
+        reg_str->append(std::format("AT: {:#04x}\n",cpu->registers_gp[CpuConstants::REGISTER_AT]));
+        reg_str->append(std::format("V0: {:#04x}\n",cpu->registers_gp[CpuConstants::REGISTER_V0]));
+        reg_str->append(std::format("V1: {:#04x}\n",cpu->registers_gp[CpuConstants::REGISTER_V1]));
         for(uint8_t i = 0; i < 8; i++){
-          reg_str->append(std::format("A{}: {:#04x} ",i,cpu->registers_gp[Cpu::REGISTER_A_START + i]));
+          reg_str->append(std::format("A{}: {:#04x} ",i,cpu->registers_gp[CpuConstants::REGISTER_A_START + i]));
         }
         reg_str->append("\n");
         for(uint8_t i = 0; i < 8; i++){
-          reg_str->append(std::format("T{}: {:#04x} ",i,cpu->registers_gp[Cpu::REGISTER_T_START + i]));
+          reg_str->append(std::format("T{}: {:#04x} ",i,cpu->registers_gp[CpuConstants::REGISTER_T_START + i]));
         }
         reg_str->append("\n");
         for(uint8_t i = 0; i < 8; i++){
-          reg_str->append(std::format("S{}: {:#04x} ",i,cpu->registers_gp[Cpu::REGISTER_S_START + i]));
+          reg_str->append(std::format("S{}: {:#04x} ",i,cpu->registers_gp[CpuConstants::REGISTER_S_START + i]));
         }
         reg_str->append("\n");
-        reg_str->append(std::format("K0: {:#04x}\n",cpu->registers_gp[Cpu::REGISTER_K0]));
-        reg_str->append(std::format("K1: {:#04x}\n",cpu->registers_gp[Cpu::REGISTER_K1]));
-        reg_str->append(std::format("GP: {:#04x}\n",cpu->registers_gp[Cpu::REGISTER_GP]));
-        reg_str->append(std::format("SP: {:#04x}\n",cpu->registers_gp[Cpu::REGISTER_STACK_POINTER]));
-        reg_str->append(std::format("FP: {:#04x}\n",cpu->registers_gp[Cpu::REGISTER_FRAME_POINTER]));
-        reg_str->append(std::format("RA: {:#04x}\n",cpu->registers_gp[Cpu::REGISTER_RETURN_ADDRESS]));
+        reg_str->append(std::format("K0: {:#04x}\n",cpu->registers_gp[CpuConstants::REGISTER_K0]));
+        reg_str->append(std::format("K1: {:#04x}\n",cpu->registers_gp[CpuConstants::REGISTER_K1]));
+        reg_str->append(std::format("GP: {:#04x}\n",cpu->registers_gp[CpuConstants::REGISTER_GP]));
+        reg_str->append(std::format("SP: {:#04x}\n",cpu->registers_gp[CpuConstants::REGISTER_STACK_POINTER]));
+        reg_str->append(std::format("FP: {:#04x}\n",cpu->registers_gp[CpuConstants::REGISTER_FRAME_POINTER]));
+        reg_str->append(std::format("RA: {:#04x}\n",cpu->registers_gp[CpuConstants::REGISTER_RETURN_ADDRESS]));
         reg_str->append("```");
         event.reply(reg_str->c_str());
       }
