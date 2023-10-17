@@ -24,14 +24,15 @@ namespace MipsEmulator{
       MISSING_PARAMETER,
       INVALID_PARAMETER,
       TOO_MANY_PARAMETERS,
+      INVALID_REGISTER,
     };
 
 
     typedef struct error {
       ErrorType type;
-      std::string message;
       int line;
       int column;
+      std::string message;
       void print(){
         std::cout << "Error: " << message << " Type: ";
         switch(type){
@@ -95,7 +96,34 @@ namespace MipsEmulator{
       std::vector<error> errors;
       std::vector<label> labels;
       std::vector<CpuInstructions::instruction> instructions;
+      void print(){
+        std::cout << "Analyzer: \n";
+        std::cout << "Tokens: \n";
+        for(Assembler::token token : tokens){
+          token.print();
+        }
+        std::cout << "Errors: \n";
+        for(error error : errors){
+          error.print();
+        }
+        std::cout << "Labels: \n";
+        for(label label : labels){
+          std::cout << "Name: " << label.name << " Address: " << label.address << "\n";
+        }
+        std::cout << "Instructions: \n";
+        for(CpuInstructions::instruction instruction : instructions){
+          instruction.print();
+        }
+
+      }
     } Analyzer;
+
+    /*
+     * Checks the sequence of tokens for errors
+     * @return a vector of errors
+     */
+    std::shared_ptr<Analyzer> analyze(std::vector<token>);
+
 
     /*
      * Hashes a string to a 32 bit integer
@@ -166,10 +194,5 @@ namespace MipsEmulator{
         std::cout << "Curr Char: " << curr_char << "\n";
       };
     } Tokenizer;
-    /*
-     * Checks the sequence of tokens for errors
-     * @return a vector of errors
-     */
-    std::vector<error> analyze(std::vector<token>);
   }
 }

@@ -1,3 +1,4 @@
+#pragma once
 #include "../assembler/assembler.hpp"
 
 namespace MipsEmulator {

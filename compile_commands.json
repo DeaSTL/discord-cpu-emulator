@@ -1,135 +1,20 @@
 [
   {
     "arguments": [
-      "/usr/bin/g++",
-      "-c",
-      "-I",
-      "/usr/local/include",
+      "/usr/bin/c++",
+      "-I/home/deastl/repos/discord-cpu-bot/src",
+      "-I/home/deastl/repos/discord-cpu-bot/include",
+      "-std=gnu++20",
       "-Wall",
       "-Wextra",
       "-Wpedantic",
-      "-g",
-      "-std=c++20",
-      "-o",
-      "build/main.o",
-      "src/cpu.cpp"
-    ],
-    "directory": "/home/deastl/repos/discord-cpu-bot",
-    "file": "/home/deastl/repos/discord-cpu-bot/src/cpu.cpp",
-    "output": "/home/deastl/repos/discord-cpu-bot/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
       "-c",
-      "-I",
-      "/usr/local/include",
-      "-Wall",
-      "-Wextra",
-      "-Wpedantic",
-      "-g",
-      "-std=c++20",
       "-o",
-      "build/main.o",
-      "src/execution.cpp"
+      "CMakeFiles/DiscordMipsEmulator.dir/src/test/test_assembler.cpp.o",
+      "/home/deastl/repos/discord-cpu-bot/src/test/test_assembler.cpp"
     ],
     "directory": "/home/deastl/repos/discord-cpu-bot",
-    "file": "/home/deastl/repos/discord-cpu-bot/src/execution.cpp",
-    "output": "/home/deastl/repos/discord-cpu-bot/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-c",
-      "-I",
-      "/usr/local/include",
-      "-Wall",
-      "-Wextra",
-      "-Wpedantic",
-      "-g",
-      "-std=c++20",
-      "-o",
-      "build/main.o",
-      "src/instruction_parse.cpp"
-    ],
-    "directory": "/home/deastl/repos/discord-cpu-bot",
-    "file": "/home/deastl/repos/discord-cpu-bot/src/instruction_parse.cpp",
-    "output": "/home/deastl/repos/discord-cpu-bot/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-c",
-      "-I",
-      "/usr/local/include",
-      "-Wall",
-      "-Wextra",
-      "-Wpedantic",
-      "-g",
-      "-std=c++20",
-      "-o",
-      "build/main.o",
-      "src/instructions.cpp"
-    ],
-    "directory": "/home/deastl/repos/discord-cpu-bot",
-    "file": "/home/deastl/repos/discord-cpu-bot/src/instructions.cpp",
-    "output": "/home/deastl/repos/discord-cpu-bot/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-c",
-      "-I",
-      "/usr/local/include",
-      "-Wall",
-      "-Wextra",
-      "-Wpedantic",
-      "-g",
-      "-std=c++20",
-      "-o",
-      "build/main.o",
-      "src/main.cpp"
-    ],
-    "directory": "/home/deastl/repos/discord-cpu-bot",
-    "file": "/home/deastl/repos/discord-cpu-bot/src/main.cpp",
-    "output": "/home/deastl/repos/discord-cpu-bot/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-c",
-      "-I",
-      "/usr/local/include",
-      "-Wall",
-      "-Wextra",
-      "-Wpedantic",
-      "-g",
-      "-std=c++20",
-      "-o",
-      "build/main.o",
-      "src/assembler/analyzer.cpp"
-    ],
-    "directory": "/home/deastl/repos/discord-cpu-bot",
-    "file": "/home/deastl/repos/discord-cpu-bot/src/assembler/analyzer.cpp",
-    "output": "/home/deastl/repos/discord-cpu-bot/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-c",
-      "-I",
-      "/usr/local/include",
-      "-Wall",
-      "-Wextra",
-      "-Wpedantic",
-      "-g",
-      "-std=c++20",
-      "-o",
-      "build/main.o",
-      "src/assembler/tokenizer.cpp"
-    ],
-    "directory": "/home/deastl/repos/discord-cpu-bot",
-    "file": "/home/deastl/repos/discord-cpu-bot/src/assembler/tokenizer.cpp",
-    "output": "/home/deastl/repos/discord-cpu-bot/build/main.o"
+    "file": "/home/deastl/repos/discord-cpu-bot/src/test/test_assembler.cpp",
+    "output": "/home/deastl/repos/discord-cpu-bot/CMakeFiles/DiscordMipsEmulator.dir/src/test/test_assembler.cpp.o"
   }
 ]

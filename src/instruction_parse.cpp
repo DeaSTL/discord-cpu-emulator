@@ -5,7 +5,178 @@
 #define FUNCTION_CASE(type,function) case CpuConstants::type##_FUNCTION_##function: current_instruction->id = CpuConstants::INS_##function; return current_instruction; break;
 
 namespace MipsEmulator{
-  namespace CpuInstructions{ 
+  namespace CpuInstructions{
+    int parseImmediate(std::string imm){
+      if(imm.length() < 1){
+        return 0;
+      }else{
+       if(imm.length() > 2){
+          switch(imm[0]){
+            /*
+             * Parses hex numbers
+             */
+            case '0':
+              switch(imm[1]){
+                case 'x':
+                  return std::stoi(imm,nullptr,16);
+                  break;
+              }
+              break;
+            case '-':
+              /*
+               * Parses nagative numbers
+               */
+              switch(imm[1]){
+                /*
+                 * Parses hex numbers
+                 */
+                case '0':
+                  switch(imm[2]){
+                    case 'x':
+                      return std::stoi(imm,nullptr,16);
+                      break;
+                  }
+                  break;
+                default:
+                  return std::stoi(imm,nullptr,10);
+                  break;
+              }
+            /*
+             * Parses posive integers
+             */
+            default:
+              return std::stoi(imm,nullptr,10);
+              break;
+          }
+        }
+
+      }
+      return 0;
+
+    }
+    Register parseRegister(std::string reg){
+      if(reg.length() < 2){
+        return Register::INVALID_REGISTER;
+      }
+      switch(reg[0]){
+        case 'v':
+          switch(reg[1]){
+            case '0':
+              return Register::V0;
+              break;
+            case '1':
+              return Register::V1;
+              break;
+          }
+          break;
+        case 'a':
+          switch(reg[1]){
+            case '0':
+              return Register::A0;
+              break;
+            case '1':
+              return Register::A1;
+              break;
+            case '2':
+              return Register::A2;
+              break;
+            case '3':
+              return Register::A3;
+              break;
+          }
+          break;
+        case 'k':
+          switch(reg[1]){
+            case '0':
+              return Register::K0;
+              break;
+            case '1':
+              return Register::K1;
+              break;
+          }
+          break;
+        case 't':
+          switch(reg[1]){
+            case '0':
+              return Register::T0;
+              break;
+            case '1':
+              return Register::T1;
+              break;
+            case '2':
+              return Register::T2;
+              break;
+            case '3':
+              return Register::T3;
+              break;
+            case '4':
+              return Register::T4;
+              break;
+            case '5':
+              return Register::T5;
+              break;
+            case '6':
+              return Register::T6;
+              break;
+            case '7':
+              return Register::T7;
+              break;
+            case '8':
+              return Register::T8;
+              break;
+            case '9':
+              return Register::T9;
+              break;
+          }
+          break;
+        case 's':
+          switch(reg[1]){
+            case '0':
+              return Register::S0;
+              break;
+            case '1':
+              return Register::S1;
+              break;
+            case '2':
+              return Register::S2;
+              break;
+            case '3':
+              return Register::S3;
+              break;
+            case '4':
+              return Register::S4;
+              break;
+            case '5':
+              return Register::S5;
+              break;
+            case '6':
+              return Register::S6;
+              break;
+            case '7':
+              return Register::S7;
+              break;
+          }
+      }
+      if(reg == "zero"){
+        return Register::ZERO;
+      }
+      if(reg == "at"){
+        return Register::AT;
+      }
+      if(reg == "gp"){
+        return Register::GP;
+      }
+      if(reg == "sp"){
+        return Register::SP;
+      }
+      if(reg == "fp"){
+        return Register::FP;
+      }
+      if(reg == "ra"){
+        return Register::RA;
+      }
+      return Register::INVALID_REGISTER;
+    }
     std::shared_ptr<CpuInstructions::instruction> parseRInstruction(uint32_t raw_instruction){
       uint8_t opcode = (raw_instruction >> CpuConstants::OPCODE_OFF) &  CpuConstants::OPCODE_MASK;
       uint8_t rs = (raw_instruction >>  CpuConstants::R_TYPE_RS_OFF) &  CpuConstants::R_TYPE_RS_MASK; 

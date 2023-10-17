@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <vector>
 #include <memory>
+#include <iostream>
 
 
 namespace MipsEmulator{
@@ -10,11 +11,46 @@ namespace MipsEmulator{
   namespace CpuInstructions{
     enum InstructionType {
       R,
-      I,
+      I, // Requires rs, rt and imm
       J,
       FR,
       FI,
       INVALID
+    };
+    enum Register {
+      ZERO,
+      AT,
+      V0,
+      V1,
+      A0,
+      A1,
+      A2,
+      A3,
+      T0,
+      T1,
+      T2,
+      T3,
+      T4,
+      T5,
+      T6,
+      T7,
+      S0,
+      S1,
+      S2,
+      S3,
+      S4,
+      S5,
+      S6,
+      S7,
+      T8,
+      T9,
+      K0,
+      K1,
+      GP,
+      SP,
+      FP,
+      RA,
+      INVALID_REGISTER
     };
     struct instruction {
       std::string name {""};
@@ -36,7 +72,24 @@ namespace MipsEmulator{
       uint8_t fd{0};
       bool valid{false};
       void execute(std::shared_ptr<Cpu> cpu);
-      void print();
+      void print(){
+        std::cout << "Instruction: " << name << std::endl;
+        std::cout << "Type: " << type << std::endl;
+        std::cout << "Raw instruction: " << raw_instruction << std::endl;
+        std::cout << "Opcode: " << opcode << std::endl;
+        std::cout << "Rs: " << rs << std::endl;
+        std::cout << "Rt: " << rt << std::endl;
+        std::cout << "Rd: " << rd << std::endl;
+        std::cout << "Shamt: " << shamt << std::endl;
+        std::cout << "Funct: " << funct << std::endl;
+        std::cout << "Imm: " << imm << std::endl;
+        std::cout << "Addr: " << addr << std::endl;
+        std::cout << "Fmt: " << fmt << std::endl;
+        std::cout << "Ft: " << ft << std::endl;
+        std::cout << "Fs: " << fs << std::endl;
+        std::cout << "Fd: " << fd << std::endl;
+        std::cout << "Valid: " << valid << std::endl;
+      }
     };
     constexpr int hash(std::string str){
       int hash = 0;
@@ -62,6 +115,8 @@ namespace MipsEmulator{
       return hash;
     }
     std::shared_ptr<instruction> parseInstruction(std::string instruction);
+    Register parseRegister(std::string reg);
+    int32_t parseImmediate(std::string imm);
 
     std::shared_ptr<instruction> parseRawInstruction(uint32_t raw_instruction);
     constexpr instruction ADD = {.name = "add",.type = InstructionType::R,.hash=hash("add"),.opcode = 0,.funct = 32};
@@ -172,5 +227,14 @@ namespace MipsEmulator{
       SYSCALL,
       BREAK
     };
+    constexpr instruction getInstruction(std::string name){
+      for(size_t i = 0;i < all.size();i++){
+        if(all[i].name == name){
+          all[i].
+          return all[i];
+        }
+      }
+      return instruction{};
+    }
   }
 }
