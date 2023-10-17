@@ -6,7 +6,7 @@ Work in progress features
     - [x] Tokenizer
     - [ ] Syntax Analyzer
     - [ ] Discord Assembly Input
-- [ ] Interprater
+- [ ] interpreter
     - [x] Instruction Declaration
     - [ ] Execution Callbacks
     - [ ] Interrups
