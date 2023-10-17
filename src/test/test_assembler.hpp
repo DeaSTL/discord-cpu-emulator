@@ -1,4 +1,4 @@
-#include "../src/assembler/assembler.hpp"
+#include "../assembler/assembler.hpp"
 
 namespace MipsEmulator {
   namespace Test{

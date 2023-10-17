@@ -38,6 +38,9 @@ namespace MipsEmulator {
           line = "";
         }
       }
+      if(line.length() > 0 && lines.size() == 0){
+        lines.push_back(line);
+      }
       return lines;
     }
     void nextLine(std::shared_ptr<Tokenizer> tokenizer){

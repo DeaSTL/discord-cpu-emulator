@@ -2,11 +2,13 @@
 #include "cpu_instructions.hpp" 
 #include "cpu_constants.hpp"
 
+#define FUNCTION_CASE(type,function) case CpuConstants::type##_FUNCTION_##function: current_instruction->id = CpuConstants::INS_##function; return current_instruction; break;
+
 namespace MipsEmulator{
   namespace CpuInstructions{ 
     std::shared_ptr<CpuInstructions::instruction> parseRInstruction(uint32_t raw_instruction){
       uint8_t opcode = (raw_instruction >> CpuConstants::OPCODE_OFF) &  CpuConstants::OPCODE_MASK;
-      uint8_t rs = (raw_instruction >>  CpuConstants::R_TYPE_RS_OFF) &  CpuConstants::R_TYPE_RS_MASK;
+      uint8_t rs = (raw_instruction >>  CpuConstants::R_TYPE_RS_OFF) &  CpuConstants::R_TYPE_RS_MASK; 
       uint8_t rt = (raw_instruction >>  CpuConstants::R_TYPE_RT_OFF) &  CpuConstants::R_TYPE_RT_MASK;
       uint8_t rd = (raw_instruction >>  CpuConstants::R_TYPE_RD_OFF) &  CpuConstants::R_TYPE_RD_MASK;
       uint8_t shamt = (raw_instruction >>  CpuConstants::R_TYPE_SHAMT_OFF) &  CpuConstants::R_TYPE_SHAMT_MASK;
@@ -25,114 +27,34 @@ namespace MipsEmulator{
 
       std::shared_ptr<CpuInstructions::instruction> current_instruction = std::make_shared<CpuInstructions::instruction>(_current_instruction);
       switch(current_instruction->funct){
-        case  CpuConstants::R_FUNCTION_ADD:
-          current_instruction->id =  CpuConstants::INS_ADD;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_ADDU:
-          current_instruction->id =  CpuConstants::INS_ADDU;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_AND:
-          current_instruction->id =  CpuConstants::INS_AND; 
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_DIV:
-          current_instruction->id =  CpuConstants::INS_DIV; 
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_DIVU:
-          current_instruction->id =  CpuConstants::INS_DIVU; 
-          return current_instruction;
-          break;
-        case CpuConstants:: R_FUNCTION_JALR:
-          current_instruction->id =  CpuConstants::INS_JALR;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_JR:
-          current_instruction->id =  CpuConstants::INS_JR;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_MFHI:
-          current_instruction->id =  CpuConstants::INS_MFHI;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_MFLO:
-          current_instruction->id =  CpuConstants::INS_MFLO;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_MTHI:
-          current_instruction->id =  CpuConstants::INS_MTHI;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_MTLO:
-          current_instruction->id =  CpuConstants::INS_MTLO;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_MULT:
-          current_instruction->id =  CpuConstants::INS_MULT;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_MULTU:
-          current_instruction->id =  CpuConstants::INS_MULTU;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_NOR:
-          current_instruction->id =  CpuConstants::INS_NOR;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_OR:
-          current_instruction->id =  CpuConstants::INS_OR;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_SLL:
-          current_instruction->id =  CpuConstants::INS_SLL;
-          return current_instruction;
-          break;
-        case CpuConstants::R_FUNCTION_SLLV:
-          current_instruction->id =  CpuConstants::INS_SLLV;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_SLT:
-          current_instruction->id =  CpuConstants::INS_SLT;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_SLTU:
-          current_instruction->id =  CpuConstants::INS_SLTU;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_SRA:
-          current_instruction->id =  CpuConstants::INS_SRA;
-          return current_instruction;
-          break;
-        case CpuConstants::R_FUNCTION_SRLV:
-          current_instruction->id =  CpuConstants::INS_SRLV;
-          return current_instruction;
-          break;
-        case CpuConstants::R_FUNCTION_SRAV:
-          current_instruction->id =  CpuConstants::INS_SRAV;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_SRL:
-          current_instruction->id =  CpuConstants::INS_SRL;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_SUB:
-          current_instruction->id =  CpuConstants::INS_SUB;
-          return current_instruction;
-          break;
-        case CpuConstants::R_FUNCTION_XOR:
-          current_instruction->id =  CpuConstants::INS_XOR;
-          return current_instruction;
-          break;
-        case  CpuConstants::R_FUNCTION_SUBU:
-          current_instruction->id =  CpuConstants::INS_SUBU;
-          return current_instruction;
-          break;
-        case CpuConstants::R_FUNCTION_SYSCALL:
-          current_instruction->id =  CpuConstants::INS_SYSCALL;
-          return current_instruction;
-          break;
+        FUNCTION_CASE(R,ADD);
+        FUNCTION_CASE(R,ADDU);
+        FUNCTION_CASE(R,AND);
+        FUNCTION_CASE(R,DIV);
+        FUNCTION_CASE(R,DIVU);
+        FUNCTION_CASE(R,JALR);
+        FUNCTION_CASE(R,JR);
+        FUNCTION_CASE(R,MFHI);
+        FUNCTION_CASE(R,MFLO);
+        FUNCTION_CASE(R,MTHI);
+        FUNCTION_CASE(R,MTLO);
+        FUNCTION_CASE(R,MULT);
+        FUNCTION_CASE(R,MULTU);
+        FUNCTION_CASE(R,NOR);
+        FUNCTION_CASE(R,OR);
+        FUNCTION_CASE(R,SLL);
+        FUNCTION_CASE(R,SLLV);
+        FUNCTION_CASE(R,SLT);
+        FUNCTION_CASE(R,SLTU);
+        FUNCTION_CASE(R,SRA);
+        FUNCTION_CASE(R,SRAV);
+        FUNCTION_CASE(R,SRL);
+        FUNCTION_CASE(R,SRLV);
+        FUNCTION_CASE(R,SUB);
+        FUNCTION_CASE(R,SUBU);
+        FUNCTION_CASE(R,SYSCALL);
+        FUNCTION_CASE(R,XOR);
+        FUNCTION_CASE(R,BREAK);
       }
       current_instruction->valid = false;
       return current_instruction;
@@ -180,86 +102,28 @@ namespace MipsEmulator{
 
       std::shared_ptr<CpuInstructions::instruction> current_instruction = std::make_shared<CpuInstructions::instruction>(_current_instruction);
       switch(current_instruction->opcode){
-        case CpuConstants::I_FUNCTION_ADDI:
-          current_instruction->id = CpuConstants::INS_ADDI;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_ADDIU:
-          current_instruction->id = CpuConstants::INS_ADDIU;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_ANDI:
-          current_instruction->id = CpuConstants::INS_ANDI;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_BEQ:
-          current_instruction->id = CpuConstants::INS_BEQ;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_BGTZ:
-          current_instruction->id = CpuConstants::INS_BGTZ;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_BLEZ:
-          current_instruction->id = CpuConstants::INS_BLEZ;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_BNE:
-          current_instruction->id = CpuConstants::INS_BNE;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_LB:
-          current_instruction->id = CpuConstants::INS_LB;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_LBU:
-          current_instruction->id = CpuConstants::INS_LBU;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_LHU:
-          current_instruction->id = CpuConstants::INS_LHU;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_LUI:
-          current_instruction->id = CpuConstants::INS_LUI;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_LH:
-          current_instruction->id = CpuConstants::INS_LH;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_LW:
-          current_instruction->id = CpuConstants::INS_LW;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_ORI:
-          current_instruction->id = CpuConstants::INS_ORI;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_SB:
-          current_instruction->id = CpuConstants::INS_SB;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_SH:
-          current_instruction->id = CpuConstants::INS_SH;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_SLTI:
-          current_instruction->id = CpuConstants::INS_SLTI;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_SLTIU:
-          current_instruction->id = CpuConstants::INS_SLTIU;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_SW:
-          current_instruction->id = CpuConstants::INS_SW;
-          return current_instruction;
-          break;
-        case CpuConstants::I_FUNCTION_XORI:
-          current_instruction->id = CpuConstants::INS_XORI;
-          return current_instruction;
-          break;
+        FUNCTION_CASE(I,ADDI);
+        FUNCTION_CASE(I,ADDIU);
+        FUNCTION_CASE(I,ANDI);
+        FUNCTION_CASE(I,BEQ);
+        FUNCTION_CASE(I,BGTZ);
+        FUNCTION_CASE(I,BLEZ);
+        FUNCTION_CASE(I,BNE);
+        FUNCTION_CASE(I,LBU);
+        FUNCTION_CASE(I,LHU);
+        FUNCTION_CASE(I,LL);
+        FUNCTION_CASE(I,LUI);
+        FUNCTION_CASE(I,LW);
+        FUNCTION_CASE(I,LWL);
+        FUNCTION_CASE(I,LWR);
+        FUNCTION_CASE(I,ORI);
+        FUNCTION_CASE(I,SB);
+        FUNCTION_CASE(I,SC);
+        FUNCTION_CASE(I,SH);
+        FUNCTION_CASE(I,SLTI);
+        FUNCTION_CASE(I,SLTIU);
+        FUNCTION_CASE(I,SW);
+        FUNCTION_CASE(I,XORI);
       }
       current_instruction->valid = false;
       return current_instruction;

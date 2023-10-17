@@ -141,6 +141,30 @@ namespace MipsEmulator{
       char next_char;
       char prev_char;
       char curr_char;
+      void print(){
+        std::cout << "Tokenizer: \n";
+        std::cout << "Tokens: \n";
+        for(auto token : tokens){
+          token.print();
+        }
+        std::cout << "Errors: \n";
+        for(auto error : errors){
+          error.print();
+        }
+        std::cout << "Asm Code: \n";
+        std::cout << asm_code << "\n";
+        std::cout << "Lines: \n";
+        for(auto line : lines){
+          std::cout << line << "\n";
+        }
+        std::cout << "Keyword Buffer: \n";
+        std::cout << keyword_buffer << "\n";
+        std::cout << "Col: " << col << "\n";
+        std::cout << "Row: " << row << "\n";
+        std::cout << "Next Char: " << next_char << "\n";
+        std::cout << "Prev Char: " << prev_char << "\n";
+        std::cout << "Curr Char: " << curr_char << "\n";
+      };
     } Tokenizer;
     /*
      * Checks the sequence of tokens for errors

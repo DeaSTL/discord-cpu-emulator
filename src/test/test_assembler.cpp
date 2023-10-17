@@ -1,6 +1,7 @@
 #include "test_assembler.hpp"
-#include "../src/cpu_instructions.hpp"
-#include "../src/assembler/assembler.hpp"
+#include "../cpu_instructions.hpp"
+#include "../assembler/assembler.hpp"
+#include <catch2/catch_test_macros.hpp>
 #include <string>
 #include <iostream>
 #include <vector>
@@ -15,51 +16,27 @@ namespace MipsEmulator {
       }
       return lower;
     }
-    const std::vector<CpuInstructions::instruction> test_instructions = {
-      CpuInstructions::J_,
-      CpuInstructions::ADD,
-      CpuInstructions::LW,
-      CpuInstructions::SW,
-      CpuInstructions::BEQ,
-      CpuInstructions::BNE,
-      CpuInstructions::SLT,
-      CpuInstructions::ADDI,
-      CpuInstructions::SUB,
-      CpuInstructions::AND,
-      CpuInstructions::OR,
-      CpuInstructions::XOR,
-      CpuInstructions::NOR,
-      CpuInstructions::SLL,
-      CpuInstructions::SRL,
-      CpuInstructions::SRA,
-      CpuInstructions::JR,
-      CpuInstructions::JAL,
-      CpuInstructions::JALR,
-      CpuInstructions::MFHI,
-      CpuInstructions::MFLO,
-      CpuInstructions::MULT,
-      CpuInstructions::MULTU,
-      CpuInstructions::DIV,
-      CpuInstructions::DIVU,
-      CpuInstructions::ADDU,
-      CpuInstructions::SUBU,
-      CpuInstructions::ANDI,
-      CpuInstructions::ORI,
-      CpuInstructions::LUI,
-      CpuInstructions::SLTI,
-      CpuInstructions::SLTIU,
-      CpuInstructions::LB,
-      CpuInstructions::LBU,
-      CpuInstructions::LHU,
-      CpuInstructions::SB,
-      CpuInstructions::SH,
-    };
-    typedef struct expected_data{
+    typedef struct test_data_line{
       std::vector<Assembler::token> tokens;
       std::string line;
+      void print(){
+        std::cout << "Line: " << line << std::endl;
+        std::cout << "Tokens: " << std::endl;
+        for(Assembler::token token : tokens){
+          token.print();
+        }
+      }
     } expected_data;
-    expected_data instructionToLine(CpuInstructions::instruction instruction){
-      expected_data data;
+    test_data_line instructionToLine(CpuInstructions::instruction instruction){
+      test_data_line data;
+      instruction.fd = rand() % 8;
+      instruction.fs = rand() % 8;
+      instruction.ft = rand() % 8;
+      instruction.rd = rand() % 8;
+      instruction.rs = rand() % 8;
+      instruction.rt = rand() % 8;
+      instruction.imm = rand() % 100;
+
       data.line = "";
       data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::INSTRUCTION, .value = tolower(instruction.name)});
       if(instruction.type == CpuInstructions::InstructionType::J){
@@ -77,8 +54,7 @@ namespace MipsEmulator {
       }
       if(instruction.type == CpuInstructions::InstructionType::I){
         data.line += tolower(instruction.name) + " $s" + 
-          std::to_string(instruction.rt) + " $s" + 
-          std::to_string(instruction.rs) + " " + 
+          std::to_string(instruction.rt) + " $s" + std::to_string(instruction.rs) + " " + 
           std::to_string(instruction.imm);
         data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = "s" + std::to_string(instruction.rt)});
         data.tokens.push_back(Assembler::token{.type = Assembler::TokenType::REGISTER, .value = "s" + std::to_string(instruction.rs)});
@@ -86,58 +62,66 @@ namespace MipsEmulator {
       }
       return data;
     }
-    bool testTokenizer(){
-      std::cout << "Testing tokenizer" << std::endl;
-      std::string test_asm = "";
-      std::vector<expected_data> expected; 
-      for(CpuInstructions::instruction inst :test_instructions){
-        inst.imm = rand() % 0x69;
-        inst.rd = rand() % 0x8;
-        inst.rs = rand() % 0x8;
-        inst.rt = rand() % 0x8;
-        std::string line = instructionToLine(inst).line;
-        expected_data data = instructionToLine(inst);
-        expected.push_back(data);
-        test_asm += line + "\n";
-      }
-      std::vector<Assembler::token> tokens = Assembler::tokenize(test_asm);
-      std::vector<Assembler::token> expected_tokens;
 
-      for(expected_data data : expected){
-        for(Assembler::token token : data.tokens){
-          expected_tokens.push_back(token);
-        }
-      }
-      for(size_t i = 0; i < expected_tokens.size(); i++ ){
-        if(expected_tokens[i].type != tokens[i].type || expected_tokens[i].value != tokens[i].value){
-          std::cout << "Expected: ";
-          expected_tokens[i].print();
-          std::cout << "Got: \n";
-          tokens[i].print();
-          break;
-        }else{
-          std::cout << "Testing: ";
-          expected_tokens[i].print();
-        }
-        if(i > tokens.size()){
-          std::cout << "Expected " << expected_tokens.size() << " tokens but got " << tokens.size() << std::endl;
-          break;
-        }
-      }
-
-      if(tokens.size() != expected_tokens.size()){
-        std::cout << "Expected " << expected_tokens.size() << " tokens but got " << tokens.size() << std::endl;
+    bool compareMockTokens(test_data_line line){
+      std::vector<Assembler::token> tokens = Assembler::tokenize(line.line);
+      if(tokens.size() != line.tokens.size()){
+        std::cout << "Token size mismatch expected: " << line.tokens.size() << " got: " << tokens.size() << std::endl;
         return false;
-      }else{
-        std::cout << "Tokenizer test passed" << std::endl;
       }
-
-      return false;
-    }
-    bool testAssembler() {
-      testTokenizer();
-
+      for(size_t i = 0; i < tokens.size(); i++){
+        if(tokens[i].type != line.tokens[i].type){
+          std::cout << "Token type mismatch expected: " << (int)line.tokens[i].type << " got: " << (int)tokens[i].type << std::endl;
+          return false;
+        }
+        if(tokens[i].value != line.tokens[i].value){
+          std::cout << "Token value mismatch expected: " << line.tokens[i].value << " got: " << tokens[i].value << std::endl;
+          return false;
+        }
+      }
       return true;
+    };
+
+    TEST_CASE("Test assembler tokenize", "[assembler]"){
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::ADD)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::LW)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SW)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::BEQ)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::BNE)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SLT)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::ADDI)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SUB)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::AND)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::OR)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::XOR)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::NOR)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SLL)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SRL)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SRA)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::JR)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::JAL)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::JALR)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::MFHI)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::MFLO)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::MULT)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::MULTU)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::DIV)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::DIVU)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::ADDU)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SUBU)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::ANDI)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::ORI)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::LUI)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SLTI)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SLTIU)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::LB)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::LBU)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::LHU)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SB)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::SH)));
+      REQUIRE(compareMockTokens(instructionToLine(CpuInstructions::J_)));
     }
+
+
   }
 }

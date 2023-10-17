@@ -85,6 +85,9 @@ namespace MipsEmulator{
     constexpr instruction LHU{.name = "lhu",.type = InstructionType::I,.hash=hash("lhu"),.opcode = 37};
     constexpr instruction LUI{.name = "lui",.type = InstructionType::I,.hash=hash("lui"),.opcode = 15};
     constexpr instruction LW{.name = "lw",.type = InstructionType::I,.hash=hash("lw"),.opcode = 35};
+    constexpr instruction LWL{.name = "lwl",.type = InstructionType::I,.hash=hash("lwl"),.opcode = 34};
+    constexpr instruction LWR{.name = "lwr",.type = InstructionType::I,.hash=hash("lwr"),.opcode = 38};
+    constexpr instruction LL{.name = "ll",.type = InstructionType::I,.hash=hash("ll"),.opcode = 48};
     constexpr instruction MFHI{.name = "mfhi",.type = InstructionType::R,.hash=hash("mfhi"),.opcode = 0,.funct = 16};
     constexpr instruction MTHI{.name = "mthi",.type = InstructionType::R,.hash=hash("mthi"),.opcode = 0,.funct = 17};
     constexpr instruction MFLO{.name = "mflo",.type = InstructionType::R,.hash=hash("mflo"),.opcode = 0,.funct = 18};
@@ -108,6 +111,10 @@ namespace MipsEmulator{
     constexpr instruction SUB{.name = "sub",.type = InstructionType::R,.hash=hash("sub"),.opcode = 0,.funct = 34};
     constexpr instruction SUBU{.name = "subu",.type = InstructionType::R,.hash=hash("subu"),.opcode = 0,.funct = 35};
     constexpr instruction SW{.name = "sw",.type = InstructionType::I,.hash=hash("sw"),.opcode = 43};
+    constexpr instruction SWR{.name = "swr",.type = InstructionType::I,.hash=hash("swr"),.opcode = 38};
+    constexpr instruction SWL{.name = "swl",.type = InstructionType::I,.hash=hash("swl"),.opcode = 36};
+    constexpr instruction SC{.name = "sc",.type = InstructionType::I,.hash=hash("sc"),.opcode = 56};
+    constexpr instruction CACHE{.name = "cache",.type = InstructionType::I,.hash=hash("cache"),.opcode = 47};
     constexpr instruction SYSCALL{.name = "syscall",.type = InstructionType::R,.hash=hash("syscall"),.opcode = 0,.funct = 12};
     constexpr instruction BREAK{.name = "break",.type = InstructionType::R,.hash=hash("break"),.opcode = 0,.funct = 13};
     const std::vector<instruction> all = {
@@ -132,6 +139,9 @@ namespace MipsEmulator{
       LHU,
       LUI,
       LW,
+      LWL,
+      LWR,
+      LL,
       MFHI,
       MTHI,
       MFLO,
@@ -155,6 +165,10 @@ namespace MipsEmulator{
       SUB,
       SUBU,
       SW,
+      SWL,
+      SWR,
+      SC,
+      CACHE,
       SYSCALL,
       BREAK
     };
