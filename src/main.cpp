@@ -26,7 +26,7 @@ int main(int argc, char* argv[]){
   cpu->memory[4] = 0xdeadbeef;
 
   const std::string ass_code = 
-    "addi $s1 $s1 0x69";
+    "addi $s1 $s1 $v1 0x69";
   std::vector<Assembler::token> tokens = Assembler::tokenize(ass_code);
   std::shared_ptr<Assembler::Analyzer> analyzer = Assembler::analyze(tokens);
   analyzer->print();

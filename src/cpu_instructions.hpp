@@ -73,21 +73,21 @@ namespace MipsEmulator{
       bool valid{false};
       void execute(std::shared_ptr<Cpu> cpu);
       void print(){
-        std::cout << "Instruction: " << name << std::endl;
-        std::cout << "Type: " << type << std::endl;
-        std::cout << "Raw instruction: " << raw_instruction << std::endl;
+        std::cout << "Instruction: " << name << " ";
+        std::cout << "Type: " << type << " ";
+        std::cout << "Raw instruction: " << raw_instruction << " ";
         std::cout << "Opcode: " << opcode << std::endl;
-        std::cout << "Rs: " << rs << std::endl;
-        std::cout << "Rt: " << rt << std::endl;
-        std::cout << "Rd: " << rd << std::endl;
+        std::cout << "Rs: " << rs << " ";
+        std::cout << "Rt: " << rt << " ";
+        std::cout << "Rd: " << rd << " ";
         std::cout << "Shamt: " << shamt << std::endl;
-        std::cout << "Funct: " << funct << std::endl;
-        std::cout << "Imm: " << imm << std::endl;
-        std::cout << "Addr: " << addr << std::endl;
+        std::cout << "Funct: " << funct << " ";
+        std::cout << "Imm: " << imm << " ";
+        std::cout << "Addr: " << addr << " ";
         std::cout << "Fmt: " << fmt << std::endl;
-        std::cout << "Ft: " << ft << std::endl;
-        std::cout << "Fs: " << fs << std::endl;
-        std::cout << "Fd: " << fd << std::endl;
+        std::cout << "Ft: " << ft << " ";
+        std::cout << "Fs: " << fs << " ";
+        std::cout << "Fd: " << fd << " ";
         std::cout << "Valid: " << valid << std::endl;
       }
     };
@@ -229,9 +229,15 @@ namespace MipsEmulator{
     };
     constexpr instruction getInstruction(std::string name){
       for(size_t i = 0;i < all.size();i++){
+        std::cout << "Checking " << all[i].name << " against " << name << std::endl;
         if(all[i].name == name){
-          all[i].
-          return all[i];
+          return instruction{
+            .name = all[i].name,
+            .type = all[i].type,
+            .hash = all[i].hash,
+            .opcode = all[i].opcode,
+            .funct = all[i].funct
+          };
         }
       }
       return instruction{};

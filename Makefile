@@ -671,6 +671,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DiscordMipsEmulator.dir/build.make CMakeFiles/DiscordMipsEmulator.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/test/test_analyzer.o: src/test/test_analyzer.cpp.o
+.PHONY : src/test/test_analyzer.o
+
+# target to build an object file
+src/test/test_analyzer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DiscordMipsEmulator.dir/build.make CMakeFiles/DiscordMipsEmulator.dir/src/test/test_analyzer.cpp.o
+.PHONY : src/test/test_analyzer.cpp.o
+
+src/test/test_analyzer.i: src/test/test_analyzer.cpp.i
+.PHONY : src/test/test_analyzer.i
+
+# target to preprocess a source file
+src/test/test_analyzer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DiscordMipsEmulator.dir/build.make CMakeFiles/DiscordMipsEmulator.dir/src/test/test_analyzer.cpp.i
+.PHONY : src/test/test_analyzer.cpp.i
+
+src/test/test_analyzer.s: src/test/test_analyzer.cpp.s
+.PHONY : src/test/test_analyzer.s
+
+# target to generate assembly for a file
+src/test/test_analyzer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DiscordMipsEmulator.dir/build.make CMakeFiles/DiscordMipsEmulator.dir/src/test/test_analyzer.cpp.s
+.PHONY : src/test/test_analyzer.cpp.s
+
 src/test/test_assembler.o: src/test/test_assembler.cpp.o
 .PHONY : src/test/test_assembler.o
 
@@ -778,6 +802,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/test/test_analyzer.o"
+	@echo "... src/test/test_analyzer.i"
+	@echo "... src/test/test_analyzer.s"
 	@echo "... src/test/test_assembler.o"
 	@echo "... src/test/test_assembler.i"
 	@echo "... src/test/test_assembler.s"

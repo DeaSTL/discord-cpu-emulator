@@ -31,7 +31,7 @@ find_library(DPP_LIBRARY dpp)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DPP_LIBRARY})
 target_link_libraries(${PROJECT_NAME} PRIVATE Catch2::Catch2)
 
-target_compile_options(${PROJECT_NAME} PUBLIC -Wall -Wextra -Wpedantic)
+target_compile_options(${PROJECT_NAME} PUBLIC -Wall -Wextra -Wpedantic -g)
 
 include(CTest)
 include(Catch)
