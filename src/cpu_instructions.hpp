@@ -59,17 +59,17 @@ namespace MipsEmulator{
       uint32_t raw_instruction{0};
       const int hash;
       uint8_t opcode{0};
-      uint8_t rs{0};
-      uint8_t rt{0};
-      uint8_t rd{0};
+      Register rs;
+      Register rt;
+      Register rd;
       uint8_t shamt{0};
       uint8_t funct{0};
       uint16_t imm{0};
       uint32_t addr{0};
       uint8_t fmt{0};
-      uint8_t ft{0};
-      uint8_t fs{0};
-      uint8_t fd{0};
+      Register ft;
+      Register fs;
+      Register fd;
       bool valid{false};
       void execute(std::shared_ptr<Cpu> cpu);
       void print(){

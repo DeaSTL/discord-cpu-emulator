@@ -25,6 +25,9 @@ namespace MipsEmulator{
       INVALID_PARAMETER,
       TOO_MANY_PARAMETERS,
       INVALID_REGISTER,
+      INVALID_TOKEN,
+      INVALID_LABEL,
+      INVALID_INSTRUCTION,
     };
 
 
@@ -113,6 +116,7 @@ namespace MipsEmulator{
         std::cout << "Instructions: \n";
         for(CpuInstructions::instruction instruction : instructions){
           instruction.print();
+          std::cout << "------------------\n";
         }
 
       }

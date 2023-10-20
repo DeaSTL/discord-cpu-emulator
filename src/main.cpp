@@ -26,7 +26,8 @@ int main(int argc, char* argv[]){
   cpu->memory[4] = 0xdeadbeef;
 
   const std::string ass_code = 
-    "addi $v1 $v1 69\n"
+    "addi $s1 $s1 69\n"
+    "add $s1 $s1 $v1\n"
     "start:\n"
     "addi $s1 $s1 69\n"
     "j->start\n";

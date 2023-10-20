@@ -10,52 +10,49 @@ namespace MipsEmulator{
       if(imm.length() < 1){
         return 0;
       }else{
-       if(imm.length() > 2){
-          switch(imm[0]){
+        switch(imm[0]){
+          /*
+           * Parses hex numbers
+           */
+          case '0':
+            switch(imm[1]){
+              case 'x':
+                return std::stoi(imm,nullptr,16);
+                break;
+            }
+            break;
+          case '-':
             /*
-             * Parses hex numbers
+             * Parses nagative numbers
              */
-            case '0':
-              switch(imm[1]){
-                case 'x':
-                  return std::stoi(imm,nullptr,16);
-                  break;
-              }
-              break;
-            case '-':
+            switch(imm[1]){
               /*
-               * Parses nagative numbers
+               * Parses hex numbers
                */
-              switch(imm[1]){
-                /*
-                 * Parses hex numbers
-                 */
-                case '0':
-                  switch(imm[2]){
-                    case 'x':
-                      return std::stoi(imm,nullptr,16);
-                      break;
-                  }
-                  break;
-                default:
-                  return std::stoi(imm,nullptr,10);
-                  break;
-              }
+              case '0':
+                switch(imm[2]){
+                  case 'x':
+                    return std::stoi(imm,nullptr,16);
+                    break;
+                }
+                break;
+              default:
+                return std::stoi(imm,nullptr,10);
+                break;
+            }
             /*
              * Parses posive integers
              */
-            default:
-              return std::stoi(imm,nullptr,10);
-              break;
-          }
+          default:
+            return std::stoi(imm,nullptr,10);
+            break;
         }
-
       }
       return 0;
 
     }
     Register parseRegister(std::string reg){
-      if(reg.length() < 2){
+      if(reg.length() < 1){
         return Register::INVALID_REGISTER;
       }
       switch(reg[0]){
@@ -157,7 +154,7 @@ namespace MipsEmulator{
               break;
           }
       }
-      if(reg == "zero"){
+      if(reg == "0"){
         return Register::ZERO;
       }
       if(reg == "at"){
@@ -187,9 +184,9 @@ namespace MipsEmulator{
       CpuInstructions::instruction _current_instruction = {};
 
       _current_instruction.opcode = opcode;
-      _current_instruction.rs = rs;
-      _current_instruction.rt = rt;
-      _current_instruction.rd = rd;
+      _current_instruction.rs = (Register)rs;
+      _current_instruction.rt = (Register)rt;
+      _current_instruction.rd = (Register)rd;
       _current_instruction.shamt = shamt;
       _current_instruction.funct = funct;
       _current_instruction.type = CpuInstructions::InstructionType::R;
@@ -264,8 +261,8 @@ namespace MipsEmulator{
       CpuInstructions::instruction _current_instruction = {};
 
       _current_instruction.opcode = opcode;
-      _current_instruction.rs = rs;
-      _current_instruction.rt = rt;
+      _current_instruction.rs = (Register)rs;
+      _current_instruction.rt = (Register)rt;
       _current_instruction.imm = imm;
       _current_instruction.type = CpuInstructions::InstructionType::I;
       _current_instruction.raw_instruction = raw_instruction;

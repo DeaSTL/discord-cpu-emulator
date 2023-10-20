@@ -29,12 +29,12 @@ namespace MipsEmulator {
     } expected_data;
     test_data_line instructionToLine(CpuInstructions::instruction instruction){
       test_data_line data;
-      instruction.fd = rand() % 8;
-      instruction.fs = rand() % 8;
-      instruction.ft = rand() % 8;
-      instruction.rd = rand() % 8;
-      instruction.rs = rand() % 8;
-      instruction.rt = rand() % 8;
+      instruction.fd = (CpuInstructions::Register)(rand() % 8);
+      instruction.fs = (CpuInstructions::Register)(rand() % 8);
+      instruction.ft = (CpuInstructions::Register)(rand() % 8);
+      instruction.rd = (CpuInstructions::Register)(rand() % 8);
+      instruction.rs = (CpuInstructions::Register)(rand() % 8);
+      instruction.rt = (CpuInstructions::Register)(rand() % 8);
       instruction.imm = rand() % 100;
 
       data.line = "";

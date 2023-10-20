@@ -7,7 +7,6 @@
 namespace MipsEmulator{
   namespace Test::Analyzer{
     TEST_CASE("Test Analyzer", "[analyzer]"){
-      REQUIRE(1 == 1);
     }
   }
 }

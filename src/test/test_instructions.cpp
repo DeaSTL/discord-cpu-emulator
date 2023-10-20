@@ -185,6 +185,49 @@ namespace MipsEmulator{
       REQUIRE(testRInstruction(RType{"NOR",0x00, 0x01, 0x02, 0x03, 0x00, 0x27}));
       REQUIRE(testRInstruction(RType{"BREAK",0x00, 0x00, 0x00, 0x00, 0x00, 0x0D}));
     }
+    TEST_CASE("Parse functions", "[parse functions]"){
+      REQUIRE(CpuInstructions::parseRegister("0") == 0);
+      REQUIRE(CpuInstructions::parseRegister("at") == 1);
+      REQUIRE(CpuInstructions::parseRegister("v0") == 2);
+      REQUIRE(CpuInstructions::parseRegister("v1") == 3);
+      REQUIRE(CpuInstructions::parseRegister("a0") == 4);
+      REQUIRE(CpuInstructions::parseRegister("a1") == 5);
+      REQUIRE(CpuInstructions::parseRegister("a2") == 6);
+      REQUIRE(CpuInstructions::parseRegister("a3") == 7);
+      REQUIRE(CpuInstructions::parseRegister("t0") == 8);
+      REQUIRE(CpuInstructions::parseRegister("t1") == 9);
+      REQUIRE(CpuInstructions::parseRegister("t2") == 10);
+      REQUIRE(CpuInstructions::parseRegister("t3") == 11);
+      REQUIRE(CpuInstructions::parseRegister("t4") == 12);
+      REQUIRE(CpuInstructions::parseRegister("t5") == 13);
+      REQUIRE(CpuInstructions::parseRegister("t6") == 14);
+      REQUIRE(CpuInstructions::parseRegister("t7") == 15);
+      REQUIRE(CpuInstructions::parseRegister("s0") == 16);
+      REQUIRE(CpuInstructions::parseRegister("s1") == 17);
+      REQUIRE(CpuInstructions::parseRegister("s2") == 18);
+      REQUIRE(CpuInstructions::parseRegister("s3") == 19);
+      REQUIRE(CpuInstructions::parseRegister("s4") == 20);
+      REQUIRE(CpuInstructions::parseRegister("s5") == 21);
+      REQUIRE(CpuInstructions::parseRegister("s6") == 22);
+      REQUIRE(CpuInstructions::parseRegister("s7") == 23);
+      REQUIRE(CpuInstructions::parseRegister("t8") == 24);
+      REQUIRE(CpuInstructions::parseRegister("t9") == 25);
+      REQUIRE(CpuInstructions::parseRegister("k0") == 26);
+      REQUIRE(CpuInstructions::parseRegister("k1") == 27);
+      REQUIRE(CpuInstructions::parseRegister("gp") == 28);
+      REQUIRE(CpuInstructions::parseRegister("sp") == 29);
+      REQUIRE(CpuInstructions::parseRegister("fp") == 30);
+      REQUIRE(CpuInstructions::parseRegister("ra") == 31);
+      REQUIRE(CpuInstructions::parseRegister("FUckifIknow") == 32); // Should be the invalid case }
+    }
+    TEST_CASE("Immediate parse","[Immediate Parse]"){
+      REQUIRE(CpuInstructions::parseImmediate("0x69") == 0x69);
+      REQUIRE(CpuInstructions::parseImmediate("69") == 69);
+      REQUIRE(CpuInstructions::parseImmediate("1000") == 1000);
+      REQUIRE(CpuInstructions::parseImmediate("0x1000") == 0x1000);
+      REQUIRE(CpuInstructions::parseImmediate("42069") == 42069);
+      REQUIRE(CpuInstructions::parseImmediate("0x42069") == 0x42069);
+    }
 
   }
 }
