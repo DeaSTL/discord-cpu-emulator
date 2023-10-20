@@ -58,6 +58,9 @@ namespace MipsEmulator {
         tokenizer->prev_char = tokenizer->lines[tokenizer->row][tokenizer->col - 1];
       }
     }
+    /*
+     * Ignores the rest of the line
+     */
     void parseComment(std::shared_ptr<Tokenizer> tokenizer){
       for(size_t i = tokenizer->col; i < tokenizer->asm_code.size(); i++){
         if(tokenizer->asm_code[i] == '\n'){
@@ -66,6 +69,10 @@ namespace MipsEmulator {
         }
       }
     }
+    /*
+     * Parses the label name and pushes it to the token vector
+     * Assumes the tokenizer is at the beginning of the label
+     */
     void parseJumpLabel(std::shared_ptr<Tokenizer> tokenizer){
       nextChar(tokenizer);
       nextChar(tokenizer);
@@ -74,6 +81,18 @@ namespace MipsEmulator {
         tokenizer->keyword_buffer += tokenizer->curr_char;
         nextChar(tokenizer);
       }
+      token token = {};
+      token.type = TokenType::LABEL;
+      token.value = tokenizer->keyword_buffer;
+      tokenizer->tokens.push_back(token);
+    }
+    /*
+     * Parses the label name and pushes it to the token vector
+     * Assumes the label has a ':' at the end of it
+     */
+    void parseLabel(std::shared_ptr<Tokenizer> tokenizer){
+      std::cout << "Keyword Buffer :" << tokenizer->keyword_buffer << std::endl;
+      tokenizer->keyword_buffer = tokenizer->keyword_buffer.substr(0, tokenizer->keyword_buffer.length());
       token token = {};
       token.type = TokenType::LABEL;
       token.value = tokenizer->keyword_buffer;
@@ -97,6 +116,10 @@ namespace MipsEmulator {
       token.value = tokenizer->keyword_buffer;
       tokenizer->tokens.push_back(token);
     }
+    /*
+     * Parses the decimal value and pushes it to the token vector
+     * Assumes the tokenizer is at the beginning of the decimal value
+     */
     void parseDecimal(std::shared_ptr<Tokenizer> tokenizer){
       tokenizer->keyword_buffer = "";
       while(tokenizer->col < tokenizer->lines[tokenizer->row].size()){
@@ -131,7 +154,10 @@ namespace MipsEmulator {
       tokenizer->tokens.push_back(token);
 
 
-
+      /*
+       * If the next character isn't a $ then we can make the assumption that is an immediate value
+       * and we can parse it as such
+       */
       if(tokenizer->next_char != '$'){
         nextChar(tokenizer);
         switch(tokenizer->curr_char){
@@ -316,6 +342,9 @@ namespace MipsEmulator {
           }
           //Other Code
           switch(tokenizer->curr_char){
+            case ':':
+              parseLabel(tokenizer);
+              break;
             case '#':
               parseComment(tokenizer);
               break;

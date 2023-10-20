@@ -229,7 +229,6 @@ namespace MipsEmulator{
     };
     constexpr instruction getInstruction(std::string name){
       for(size_t i = 0;i < all.size();i++){
-        std::cout << "Checking " << all[i].name << " against " << name << std::endl;
         if(all[i].name == name){
           return instruction{
             .name = all[i].name,

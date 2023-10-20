@@ -11,7 +11,10 @@ namespace MipsEmulator{
       int parameter_count = 0;
       for(size_t j = i + 1; j < analyzer->tokens.size(); j++){
 
-        if(analyzer->tokens[j].type == TokenType::REGISTER || analyzer->tokens[j].type == TokenType::DECIMAL || analyzer->tokens[j].type == TokenType::HEX){
+        if(analyzer->tokens[j].type == TokenType::REGISTER ||
+            analyzer->tokens[j].type == TokenType::DECIMAL ||
+            analyzer->tokens[j].type == TokenType::HEX ||
+            analyzer->tokens[j].type == TokenType::LABEL){
           parameter_count++;
         }
         else{
@@ -46,6 +49,14 @@ namespace MipsEmulator{
       }
       return false;
     }
+    label getLabel(std::string name, std::shared_ptr<Analyzer> analyzer){
+      for(label l : analyzer->labels){
+        if(l.name == name){
+          return l;
+        }
+      }
+      return label{};
+    }
     std::shared_ptr<Analyzer> analyze(std::vector<token> tokens){
       std::shared_ptr<Analyzer> analyzer(new Analyzer());
       for(token t : tokens){
@@ -56,8 +67,10 @@ namespace MipsEmulator{
         switch(tokens[i].type){
           case LABEL:
           {
+            std::cout << "Adding Label: " << analyzer->instructions.size() << std::endl;
             Assembler::label current_label{.name = tokens[i].value, .address = (uint32_t)analyzer->instructions.size()};
             analyzer->labels.push_back(current_label);
+            i++;
             break;
           }
           case INSTRUCTION:
@@ -115,6 +128,16 @@ namespace MipsEmulator{
               }
               case CpuInstructions::InstructionType::J:
               {
+                size_t parameter_count = getParameterCount(i, analyzer);
+                if(checkForParameterCountErrors(analyzer, i, parameter_count, 1)){
+                  i += parameter_count;
+                  break;
+                }else{
+                  uint32_t address = getLabel(tokens[i + 1].value, analyzer).address;
+                  current_instruction.addr = address;
+                  analyzer->instructions.push_back(current_instruction);
+                  i += parameter_count;
+                }
               }
               case CpuInstructions::InstructionType::R:
               {

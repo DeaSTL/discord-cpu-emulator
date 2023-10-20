@@ -26,11 +26,18 @@ int main(int argc, char* argv[]){
   cpu->memory[4] = 0xdeadbeef;
 
   const std::string ass_code = 
-    "addi $s1 $s1 $v1 0x69";
+    "addi $v1 $v1 69\n"
+    "start:\n"
+    "addi $s1 $s1 69\n"
+    "j->start\n";
   std::vector<Assembler::token> tokens = Assembler::tokenize(ass_code);
   std::shared_ptr<Assembler::Analyzer> analyzer = Assembler::analyze(tokens);
   analyzer->print();
 
+  /*
+   * Checks if text is a command line argument and starts the testing frame work
+   * TODO: pass offset arguments to the test framework stop being stupid and make the a seperate executable
+   */
   if(argc > 1 && argv[1] == string("test")){
     
     int result = Catch::Session().run();
@@ -42,7 +49,10 @@ int main(int argc, char* argv[]){
 
 
 
-
+  /*
+   * This handles command inputs
+   * TODO: Abstract this shit away
+   */
   bot.on_slashcommand([&cpu](const dpp::slashcommand_t event) {
       if(event.command.get_command_name() == "dump_mem") {
         string* mem_str = new string();
@@ -110,6 +120,10 @@ int main(int argc, char* argv[]){
 
 
   bot.start(dpp::st_wait);
+  /*
+   * This code never gets run but i'm gonna keep it here anway because it's funny
+   * TODO: Remove this code
+   */
   std::cout << "Hello World!\n";
   return 0;
 }
