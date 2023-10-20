@@ -4,7 +4,7 @@
 Work in progress features
 - [ ] Assembler
     - [x] Tokenizer
-    - [ ] Syntax Analyzer
+    - [x] Syntax Analyzer
     - [ ] Discord Assembly Input
 - [ ] interpreter
     - [x] Instruction Declaration
